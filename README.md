@@ -5,6 +5,18 @@
 
 > **系统不会自动发布任何内容。** 管线到"生成草稿 + 通知"为止，发布由人复制文案后自行完成。
 
+> ## 🔑 密钥不进仓库
+>
+> `.env` 由 `.gitignore` 排除，仓库里只有 `.env.example` 空模板。你需要自己填四家凭据：
+> `TIKHUB_API_KEY`、`DEEPSEEK_API_KEY`、`DASHSCOPE_API_KEY`、`QQ_APP_SECRET`。
+>
+> 换一台电脑部署时**手工把 `.env` 拷过去**即可，步骤见文末
+> 「[密钥与部署](#密钥与部署)」——那里也说明了为什么**不**把加密后的 `.env` 提交进来
+> （加密省不掉手工搬运，却要多装一个工具）。
+>
+> 顺带一提：GitHub 的 push protection **会主动拦截**含明文密钥的推送，所以"先提交看看"
+> 这条路本身也走不通。
+
 ---
 
 ## 快速开始
@@ -2000,6 +2012,9 @@ node scripts\check_node_localhost.mjs                  # Node 是否被注册表
 - ✅ Phase 8 MCP 服务（12 个工具挂在同一进程的 `/mcp/`，8 免费只读 + 4 计费受闸门管控）
 - ✅ Phase 9 关键词搜索 + 媒体落库 + 图文排版方案（搜索 13 个 MCP 工具，媒体存本地素材库）
 - ✅ Phase 10 领域聚焦 + README 转推广文案（免费打分重排、付费定时领域搜索、三平台推广生成）
+- ✅ Phase 11 图片二创（千问图生图：本地图 base64 入参、按张计费、结果下载进素材库）
+- ✅ Phase 12 QQ 图文推送（官方 Bot API、分片上传、按平台分条、被动回复分批）
+- ✅ Phase 13 知识科普 + 3D 标签球（面向计算机大类，搜图配图，Three.js 标签球，流式进度）
 
 ### 四个阶段回答了四个"能不能"
 
@@ -2018,3 +2033,109 @@ Phase 8 之后的系统边界（**这一点不会改变**）：管线到"生成�
 
 `docker-compose.yml` 里的 PostgreSQL 服务是给**用 Docker 的环境**准备的备选方案；
 本机没有 Docker，因此 Phase 2 用的是 `initdb` 建的本地集群。
+
+---
+
+## 密钥与部署
+
+### 密钥放在哪里
+
+密钥**只在本地 `.env`**（被 `.gitignore` 排除），仓库里只有 `.env.example` 空模板。
+换机器时手工把 `.env` 拷过去——就这样，不需要任何额外工具。
+
+### 部署到另一台电脑
+
+**① 先在新机器上准备好 `.env`**（这一步在 clone 之前或之后都行）：
+
+```bash
+# 从旧机器拷（scp / U 盘 / 密码管理器 / 网盘，任选）
+scp 旧机器:.../social-hot-ai/.env  social-hot-ai/.env
+```
+
+**② 然后走常规部署**：
+
+```bash
+git clone git@github.com:apodxx/social-hot-ai.git
+cd social-hot-ai
+
+# 后端
+cd backend
+python -m venv .venv
+.venv\Scripts\python -m pip install -r requirements.txt      # Linux/macOS: .venv/bin/python
+
+# 数据库（.env 里的 DATABASE_URL 指向 127.0.0.1:55432）
+#   有 Docker 就用仓库里的 docker-compose.yml；没有就 initdb 建本地集群
+docker compose up -d postgres
+
+# 迁移
+.venv\Scripts\python -m alembic upgrade head
+
+# 前端
+cd ..\frontend
+npm install && npm run build
+
+# 启动
+cd ..\backend
+.venv\Scripts\python -m app.main
+```
+
+**③ 体检一遍**——先看这份清单，再启动：
+
+| 要检查的项 | 为什么 |
+|---|---|
+| `DATABASE_URL` | 端口 `55432` 是本机 `initdb` 集群用的；用 docker-compose 通常是 `5432`，用户/库名也可能不同 |
+| `APP_HOST` | `127.0.0.1` 只监听本机；要在局域网访问就改 `0.0.0.0` |
+| 四个密钥字段是否都非空 | 空值会让对应功能以 `not configured` 失败 |
+| `MEDIA_ROOT` | 留空则用项目下的 `media/`，通常不用改 |
+
+仓库里有脚本可以一眼看出**哪些字段是空的、哪些值绑定了本机**（密钥值会遮蔽）：
+
+```bash
+python backend/scripts/audit_env_for_deploy.py
+```
+
+它还会列出几个影响行为的开关（`SCHEDULER_ENABLED`、`IMAGE_GEN_ENABLED`、`QQ_ENABLED`
+等）——换机器时值得确认一遍，尤其是**定时任务**：`SCHEDULER_ENABLED=true` 会让采集
+自动跑起来并产生 TikHub 费用。
+
+### 为什么不提交「加密后的 .env」
+
+我认真评估过这个方案（age / sops / git-crypt），结论是**对这个项目的目标不划算**：
+
+- **加密省不掉手工搬运。** 解密私钥**不能**放仓库（放进去等于没加密），所以它同样必须
+  手工搬到新机器——和直接拷 `.env` 是同一件事。
+- **却要多装一个工具、多跑一步。** 两台机器都要装 `age`，部署时先解密再启动。
+- **换来的是"配置有版本历史"**，而 `.env` 只有 48 行、改动不频繁，这个收益很小。
+
+**什么时候值得重新考虑**：如果你以后要频繁改 `.env`、或者有第三台以上的机器、或者希望
+"clone 下来就自带配置"，那加密方案就开始划算了。
+
+另一种不需要额外工具的思路：把密钥放进 **仓库 Settings → Secrets and variables → Actions**
+（加密存储、不进文件树），部署时注入 `TIKHUB_API_KEY` 等环境变量——代码本来就通过
+`pydantic-settings` 读环境变量，所以**不用改一行代码**。
+
+### 怀疑泄漏时
+
+**立刻轮换全部四家密钥**，改完 `.env`。轮换比"删掉再强推"可靠，因为强推清不掉
+已经 clone 出去的历史。
+
+| 服务 | 轮换入口 |
+|---|---|
+| TikHub | https://api.tikhub.io 控制台 → API Keys |
+| DeepSeek | https://platform.deepseek.com → API keys |
+| 阿里云百炼（DashScope） | 百炼控制台 → API-KEY 管理 |
+| QQ 机器人 | https://q.qq.com → 开发设置 → AppSecret 重置 |
+
+### 附：GitHub 会拦截含密钥的推送
+
+试过把 `.env` 提交上去，**被 GitHub 自己的 push protection 拦下了**：
+
+```
+remote: error: GH013: Repository rule violations found for refs/heads/master
+remote: - GITHUB PUSH PROTECTION
+remote:     - Push cannot contain secrets
+remote:       —— DeepSeek API Key ——  commit: 19936b1  path: .env:8
+```
+
+也就是说"先提交看看"这条路本身走不通——而且**以后每次改 `.env`（比如轮换密钥）都会被
+再拦一次**。这是选 C 而不是 A 的直接原因之一。

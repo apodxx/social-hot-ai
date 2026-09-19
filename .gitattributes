@@ -1,0 +1,27 @@
+# Line-ending policy — this project is developed on Windows and may be deployed on Linux.
+#
+# Why it matters for .env specifically: if a value line ends with CRLF on Linux, a naive
+# dotenv/pydantic-settings read can keep the trailing \r inside the value. An API key with
+# an invisible \r at the end fails authentication with a message that says nothing about
+# line endings, which is a miserable thing to debug on a fresh machine.
+# Forcing LF for .env here removes that possibility.
+* text=auto
+
+.env text eol=lf
+.env.example text eol=lf
+*.sh text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Binary-ish assets that must never be line-ending converted.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
