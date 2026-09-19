@@ -1,0 +1,181 @@
+{
+  "code": 200,
+  "request_id": "1aeda9bf-7d71-4367-a66d-275d73b2e179",
+  "message": "Request successful. This request will incur a charge.",
+  "message_zh": "请求成功，本次请求将被计费。",
+  "support": "Discord: https://discord.gg/aMEAS8Xsvz",
+  "time": "2026-09-18 02:24:35",
+  "time_stamp": 1789723475,
+  "time_zone": "America/Los_Angeles",
+  "docs": "https://api.tikhub.io/#/Xiaohongshu-Web-V3-API/fetch_note_detail_api_v1_xiaohongshu_web_v3_fetch_note_detail_get",
+  "cache_message": "This response is cached and accessible via the URL below for 24 hours at no extra cost. The cache is for request tracing only — it doesn't affect the API's data freshness and won't be returned through the API again.",
+  "cache_message_zh": "本次响应已缓存，可通过下方 URL 直接查看，有效期 24 小时，访问缓存链接无额外费用。缓存仅用于请求溯源，不影响接口数据的时效性，也不会再次通过接口返回。",
+  "cache_url": "https://cache.tikhub.io/api/v1/cache/public/1aeda9bf-7d71-4367-a66d-275d73b2e179?sign=9c39cb676f9979f0a30e73d408fce91e3404f96bed2333edb482d77bb4302366",
+  "router": "/api/v1/xiaohongshu/web_v3/fetch_note_detail",
+  "params": {
+    "note_id": "690c8bfc00000000070377b6",
+    "xsec_token": "ABWRjvdqZmVeGQxLrS0MHXWGSEgAMjJPormvZCpTmV-Rk="
+  },
+  "data": {
+    "ok": true,
+    "status": 200,
+    "code": 0,
+    "success": true,
+    "msg": "成功",
+    "data": {
+      "current_time": 1789723475439,
+      "cursor_score": "",
+      "items": [
+        {
+          "id": "690c8bfc00000000070377b6",
+          "model_type": "note",
+          "note_card": {
+            "note_id": "690c8bfc00000000070377b6",
+            "type": "video",
+            "title": "",
+            "desc": "#kpopdemonhunters[话题]# #rumi[话题]# #jinu[话题]# #fyp[话题]# #netflix[话题]#",
+            "user": {
+              "user_id": "676c375c0000000018014f0b",
+              "nickname": "Yama 阎罗",
+              "avatar": "https://sns-avatar-qc.rednotecdn.com/avatar/1040g2jo31embjvvm4q6g5prc6te62jobjclu8m8",
+              "xsec_token": "ABQtNm1sml7UPrwePuXIp8zDaMDt9NFCo6oH1BayVGNao="
+            },
+            "video": {
+              "media": {
+                "video_id": 137655058042628840,
+                "video": {
+                  "biz_name": 110,
+                  "biz_id": "281770247057274806",
+                  "duration": 59,
+                  "md5": "841dc792aecfc0a92d8d6e126e3f696b",
+                  "hdr_type": 0,
+                  "drm_type": 0,
+                  "stream_types": [
+                    258
+                  ]
+                },
+                "stream": {
+                  "EF4": [
+                    {
+                      "rotate": 0,
+                      "backup_urls": [
+                        "http://sns-v27.rednotecdn.com/stream/1/110/258/01e90c8bc42aaae8010370019a59030803_258.mp4"
+                      ],
+                      "weight": 59,
+                      "format": "mp4",
+                      "height": 740,
+                      "duration": 58567,
+                      "size": 6120157,
+                      "avg_bitrate": 835987,
+                      "audio_channels": 2,
+                      "psnr": 0,
+                      "ssim": 0,
+                      "stream_desc": "WEB_258_skip",
+                      "volume": 0,
+                      "video_bitrate": 773292,
+                      "video_duration": 58566,
+                      "audio_codec": "aac",
+                      "fps": 30,
+                      "stream_type": 258,
+                      "default_stream": 0,
+                      "width": 720,
+                      "master_url": "http://sns-v11.rednotecdn.com/stream/1/110/258/01e90c8bc42aaae8010370019a59030803_258.mp4",
+                      "hdr_type": 0,
+                      "vmaf": -1,
+                      "quality_type": "HD",
+                      "video_codec": "EF4",
+                      "audio_bitrate": 56066,
+                      "audio_duration": 58561
+                    }
+                  ],
+                  "EF6": [],
+                  "EF5": [],
+                  "EF7": []
+                }
+              },
+              "image": {
+                "first_frame_fileid": "110/0/01e90c8bc42aaae80010000000019a5902d8bd_0.jpg",
+                "thumbnail_fileid": "frame/110/0/01e90c8bc42aaae80010000000019a5902e59d_0.webp"
+              },
+              "capa": {
+                "duration": 58
+              },
+              "consumer": {
+                "origin_video_key": "pre_post/1040g0cg31ohu9iieksjg5prc6te62job563kp98"
+              },
+              "media_v2": "{\"video_id\":\"137655058042628840\",\"video\":{\"biz_name\":110,\"biz_id\":\"281770247057274806\",\"duration\":59,\"md5\":\"841dc792aecfc0a92d8d6e126e3f696b\",\"hdr_type\":0,\"drm_type\":0,\"stream_types\":[258],\"width\":720,\"height\":740,\"bound\":[{\"x\":0,\"y\":0,\"w\":0,\"h\":0}],\"bbox\":{\"ocr_v5\":[{\"x\":0,\"y\":0,\"w\":0,\"h\":0}],\"ocr_v3\":[{\"x\":0,\"y\":0,\"w\":0,\"h\":0}],\"ocr_v4\":[{\"x\":0,\"y\":0,\"w\":0,\"h\":0}],\"ocr_v2\":[{\"x\":114,\"y\":357,\"w\":496,\"h\":43}]},\"opaque1\":{\"bottomAvgLuma\":\"49\",\"loudnorm\":\"{\\\"lra\\\":6.6,\\\"htp\\\":-0.6,\\\"hldn\\\":-13.86,\\\"ldn\\\":-13.95,\\\"thr\\\":-23.95}\",\"domestic\":\"0\",\"isSupportSubtitle\":\"true\",\"rightAvgLuma\":\"83\",\"hasHumanVoice\":\"true\",\"videoLanguage\":\"[\\\"en-US\\\"]\",\"audioLevInfo\":\"{\\\"audio_quality_level\\\":\\\"E\\\",\\\"mos_overall\\\":3.8048,\\\"version\\\":\\\"3.0\\\"}\",\"insertSubtitleLanguages\":\"[\\\"en-US\\\"]\",\"topAvgLuma\":\"111\",\"audioClsInfo\":\"{\\\"music_ratio\\\":0.9945252182288243,\\\"freesound_ratio\\\":0.0,\\\"speech_ratio\\\":0.7469632036447698}\"},\"subtitles\":{\"en-US\":[{\"url\":\"https://sns-subtitle-s10.rednotecdn.com/subtitle/1/110/1/01e90c8bc42aaae8010370039a5902e518_12.srt?sign=45687dbdd5817aa1637087724a52f118&t=6AB1A093\",\"language\":\"en-US\",\"format\":0,\"type\":0}],\"source\":[{\"url\":\"https://sns-subtitle-s10.rednotecdn.com/subtitle/1/110/1/01e90c8bc42aaae8010370039a5902e3ba_1.srt?sign=76b736f5ab25556e38296c567740cb4e&t=6AB1A093\",\"language\":\"en-US\",\"format\":0,\"type\":0}],\"zh-CN\":[{\"url\":\"https://sns-subtitle-s10.rednotecdn.com/subtitle/1/110/1/01e90c8bc42aaae8010370039a5902e696_11.srt?sign=90d2b6038ac366b634a9dc0ca4727452&t=6AB1A093\",\"language\":\"zh-CN\",\"format\":0,\"type\":0}]}},\"stream\":{\"EF4\":[{\"stream_type\":258,\"stream_desc\":\"WEB_258_skip\",\"default_stream\":0,\"format\":\"mp4\",\"width\":720,\"height\":740,\"duration\":58567,\"size\":6120157,\"volume\":0.0,\"avg_bitrate\":835987,\"fps\":30,\"video_codec\":\"EF4\",\"video_bitrate\":773292,\"video_duration\":58566,\"audio_codec\":\"aac\",\"audio_bitrate\":56066,\"audio_duration\":58561,\"audio_channels\":2,\"rotate\":0,\"master_url\":\"http://sns-v11.rednotecdn.com/stream/1/110/258/01e90c8bc42aaae8010370019a59030803_258.mp4\",\"backup_urls\":[\"http://sns-v27.rednotecdn.com/stream/1/110/258/01e90c8bc42aaae8010370019a59030803_258.mp4\"],\"hdr_type\":0,\"vmaf\":-1.0,\"psnr\":0.0,\"ssim\":0.0,\"weight\":59,\"quality_type\":\"HD\",\"sr\":0,\"opaque1\":{\"pcdn_302_flag\":\"false\",\"didLoudnorm\":\"false\",\"pcdn_supplier\":\"\",\"encode_stream\":\"0\"}}],\"EF6\":[],\"EF5\":[],\"EF7\":[]},\"user_level\":0}"
+            },
+            "tag_list": [
+              {
+                "id": "682fd3810000000013020dd5",
+                "name": "kpopdemonhunters",
+                "type": "topic"
+              },
+              {
+                "id": "5d50a109000000000d0138ec",
+                "name": "rumi",
+                "type": "topic"
+              },
+              {
+                "type": "topic",
+                "id": "622f167300000000010097ab",
+                "name": "jinu"
+              },
+              {
+                "id": "5e65eb6c0000000001009787",
+                "name": "fyp",
+                "type": "topic"
+              },
+              {
+                "id": "5bf2070b4e61ca0001588202",
+                "name": "netflix",
+                "type": "topic"
+              }
+            ],
+            "time": 1762429948000,
+            "interact_info": {
+              "liked": false,
+              "collected": false,
+              "collected_count": "68",
+              "followed": false,
+              "relation": "none",
+              "nice_count": "",
+              "liked_count": "91",
+              "comment_count": "2",
+              "share_count": "3"
+            },
+            "image_list": [
+              {
+                "file_id": "1040g2sg31ohu9i35kqdg5prc6te62jobllnq848",
+                "live_photo": false,
+                "height": 2560,
+                "width": 2494,
+                "url": "",
+                "trace_id": "",
+                "info_list": [
+                  {
+                    "image_scene": "WB_PRV",
+                    "url": "http://sns-web-i10.rednotecdn.com/202609181724/20ea1d1c03ba529b865da87ea4f03252/1040g2sg31ohu9i35kqdg5prc6te62jobllnq848!nd_prv_wlteh_webp_3"
+                  },
+                  {
+                    "image_scene": "WB_DFT",
+                    "url": "http://sns-web-i10.rednotecdn.com/202609181724/4f4a720fc6aad7532b31dd43b93c767b/1040g2sg31ohu9i35kqdg5prc6te62jobllnq848!nd_dft_wlteh_webp_3"
+                  }
+                ],
+                "url_pre": "http://sns-web-i10.rednotecdn.com/202609181724/20ea1d1c03ba529b865da87ea4f03252/1040g2sg31ohu9i35kqdg5prc6te62jobllnq848!nd_prv_wlteh_webp_3",
+                "url_default": "http://sns-web-i10.rednotecdn.com/202609181724/4f4a720fc6aad7532b31dd43b93c767b/1040g2sg31ohu9i35kqdg5prc6te62jobllnq848!nd_dft_wlteh_webp_3",
+                "stream": {}
+              }
+            ],
+            "at_user_list": [],
+            "last_update_time": 1762429949000,
+            "share_info": {
+              "un_share": false
+            }
+          },
+          "ignore": false
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "social-hot-ai-frontend",
+  "private": true,
+  "version": "0.7.0",
+  "type": "module",
+  "description": "SocialHot AI 管理后台：热点采集、AI 分析、二创审核、设置",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "axios": "^1.7.9",
+    "element-plus": "^2.9.1",
+    "pinia": "^2.3.0",
+    "three": "^0.186.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "vite": "^6.0.7"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "account_name": "",
+  "field": "AI / 科技 / 数码",
+  "target_audience": "18-30岁",
+  "style": "通俗、年轻、有一点幽默",
+  "tone": "自然",
+  "preferred_topics": [
+    "AI",
+    "科技",
+    "互联网",
+    "数码"
+  ],
+  "forbidden": [
+    "虚假信息",
+    "恶意营销",
+    "过度夸张",
+    "复制原文"
+  ]
+}

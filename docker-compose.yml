@@ -1,0 +1,27 @@
+# Phase 1 needs no services at all: the API only talks to TikHub.
+# This file exists for Phase 2, which adds PostgreSQL (and the deduplication
+# tables HotContent / TopicGroup).
+#
+#   docker compose up -d postgres
+#
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: social-hot-ai-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: social_hot_ai
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d social_hot_ai"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

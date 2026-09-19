@@ -1,0 +1,1370 @@
+{
+  "code": 200,
+  "request_id": "18d84e71-3f31-495c-999e-f9fe63d1cc5e",
+  "message": "Request successful. This request will incur a charge.",
+  "message_zh": "请求成功，本次请求将被计费。",
+  "support": "Discord: https://discord.gg/aMEAS8Xsvz",
+  "time": "2026-09-18 16:00:40",
+  "time_stamp": 1789772440,
+  "time_zone": "America/Los_Angeles",
+  "docs": "https://api.tikhub.io/#/Xiaohongshu-App-V2-API/search_images_api_v1_xiaohongshu_app_v2_search_images_get",
+  "cache_message": "This response is cached and accessible via the URL below for 24 hours at no extra cost. The cache is for request tracing only — it doesn't affect the API's data freshness and won't be returned through the API again.",
+  "cache_message_zh": "本次响应已缓存，可通过下方 URL 直接查看，有效期 24 小时，访问缓存链接无额外费用。缓存仅用于请求溯源，不影响接口数据的时效性，也不会再次通过接口返回。",
+  "cache_url": "https://cache.tikhub.io/api/v1/cache/public/18d84e71-3f31-495c-999e-f9fe63d1cc5e?sign=a2ba052908a23dbe5cd461caec9256f1c4f06021475457c65a3dbdb6d9392dc4",
+  "router": "/api/v1/xiaohongshu/app_v2/search_images",
+  "params": {
+    "keyword": "数据结构",
+    "page": "1"
+  },
+  "data": {
+    "code": 0,
+    "success": true,
+    "data": {
+      "items": [
+        {
+          "image_info": {
+            "fileid": "1040g0083200um7k8iq305o8d8768559i6n28tso",
+            "height": 1687,
+            "url": "https://sns-na-i11.xhscdn.com/1040g0083200um7k8iq305o8d8768559i6n28tso?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=2bbc7c5a74678805e08294b4ca677b23&t=6aadc298",
+            "width": 1350,
+            "original": "https://sns-na-i11.xhscdn.com/1040g0083200um7k8iq305o8d8768559i6n28tso?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=2bbc7c5a74678805e08294b4ca677b23&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/1040g0083200um7k8iq305o8d8768559i6n28tso?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=2bbc7c5a74678805e08294b4ca677b23&t=6aadc298",
+            "trace_id": "1040g0083200um7k8iq305o8d8768559i6n28tso",
+            "need_load_original_image": true
+          },
+          "user_info": {
+            "red_official_verified": false,
+            "red_id": "94167193822",
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo31q56r736nu005o8d8768559irmlj1c8?imageView2/2/w/80/format/jpg",
+            "red_official_verify_type": 0,
+            "nickname": "程序员八阿哥",
+            "show_red_official_verify_icon": false,
+            "user_id": "610d41cc0000000020029532"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "content": "很多人一听到数据结构，就觉得是面试八股、算法题、刷LeetCode才会用到的东西。 但我做了这么多年App和Web项目",
+            "title": "数据结构不是八股文，是生活逻辑",
+            "image": "http://ci.xiaohongshu.com/1040g0083200um7k8iq305o8d8768559i6n28tso?imageView2/2/w/1080/format/jpg",
+            "guide_audited": true,
+            "link": "https://www.xiaohongshu.com/discovery/item/6a014cda0000000038037868?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "cover_image_index": 0,
+            "liked_count": 37,
+            "desc": "很多人一听到数据结构，就觉得是面试八股、算法题、刷LeetCode才会用到的东西。\n但我做了这么多年App和Web项目，越来越觉得：数据结构其实不是“代码知识”，它更像是这个世界运转的底层秩序。\n比如 List，像你每天刷的信息流，一条接一条往下走。\nArray，像一个排好座位的表格，每个位置都有编号，查起来很快。\nStack，最典型就是撤销和重做，你在文档里按 Ctrl+Z，本质上就是后进先出。\nQueue，就像打印机排队、游戏里的操作队列，先来的先处理。\nHeap，更像任务调度，谁优先级高，谁先被处理。\nTree，网页结构、菜单结构、公司组织架构，很多东西都是树。\nTrie / Suffix Tree，适合搜索，比如你输入几个字，系统马上给你联想关键词。\nGraph，最生活化了，社交关系、地图导航、朋友推荐，全都是点和点之间的连接。\nR-tree，做附近的人、附近门店、附近充电桩，这种空间搜索会用到。\nHash Table，就像缓存和字典，通过一个key快速找到value。\n所以我一直觉得，程序员真正要学的不是“背概念”，而是看到一个业务场景时，能想到它背后的结构。\n一个App好不好用，很多时候不是UI决定的，而是数据怎么组织、流程怎么流转、搜索怎么命中、缓存怎么设计。\n技术学到最后，其实就是把复杂世界，拆成更清晰的结构。\n#程序员[话题]# #数据结构[话题]# #软件开发[话题]# #App开发[话题]# #技术创业[话题]# #软件外包[话题]# #软件外包[话题]##flutter[话题]##算法[话题]#",
+            "title": "数据结构不是八股文，是生活逻辑",
+            "collected_count": 36,
+            "note_id": "6a014cda0000000038037868",
+            "collected": false,
+            "publish_time": {
+              "text": "05-11",
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png"
+            },
+            "liked": false,
+            "comments_count": 2,
+            "shared_count": 0,
+            "model_type": "image_card"
+          }
+        },
+        {
+          "user_info": {
+            "red_official_verified": false,
+            "red_id": "49675727627",
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo324qm35g92g6g5q3m33inaiasee6eev8?imageView2/2/w/80/format/jpg",
+            "show_red_official_verify_icon": false,
+            "red_official_verify_type": 0,
+            "nickname": "好事都灵",
+            "user_id": "687618e5000000001d01495c"
+          },
+          "image_info": {
+            "fileid": "notes_uhdr/1040g3qo3252eo6st3uc05q3m33inaiaspjs2vgo",
+            "height": 2338,
+            "need_load_original_image": true,
+            "width": 1836,
+            "original": "https://sns-na-i11.xhscdn.com/notes_uhdr/1040g3qo3252eo6st3uc05q3m33inaiaspjs2vgo?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=5e10e107e947447411f0f8197f3a0dec&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/notes_uhdr/1040g3qo3252eo6st3uc05q3m33inaiaspjs2vgo?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=5e10e107e947447411f0f8197f3a0dec&t=6aadc298",
+            "trace_id": "notes_uhdr/1040g3qo3252eo6st3uc05q3m33inaiaspjs2vgo",
+            "url": "https://sns-na-i11.xhscdn.com/notes_uhdr/1040g3qo3252eo6st3uc05q3m33inaiaspjs2vgo?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=5e10e107e947447411f0f8197f3a0dec&t=6aadc298"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "content": "数据结构有推荐的网课吗？求求了，非常需要啊#大学专业课  #求大神指点  #软件工程",
+            "guide_audited": true,
+            "image": "http://ci.xiaohongshu.com/notes_uhdr/1040g3qo3252eo6st3uc05q3m33inaiaspjs2vgo?imageView2/2/w/1080/format/jpg",
+            "title": "数据结构有推荐的网课吗？求求了，非常需要啊#大学专业课  #求大神指点  #软件",
+            "link": "https://www.xiaohongshu.com/discovery/item/6aa6acf8000000000d0244d0?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "model_type": "image_card",
+            "liked_count": 816,
+            "desc": "数据结构有推荐的网课吗？求求了，非常需要啊#大学专业课[话题]# #求大神指点[话题]# #软件工程[话题]#",
+            "title": "",
+            "collected_count": 719,
+            "note_id": "6aa6acf8000000000d0244d0",
+            "collected": false,
+            "publish_time": {
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png",
+              "text": "5 day(s) ago"
+            },
+            "comments_count": 68,
+            "liked": false,
+            "shared_count": 0,
+            "cover_image_index": 0
+          }
+        },
+        {
+          "image_info": {
+            "height": 2560,
+            "need_load_original_image": true,
+            "fileid": "1040g2sg31ch6offlh01g5pb1ibhi5k0avk4f5ag",
+            "width": 1851,
+            "original": "https://sns-na-i11.xhscdn.com/1040g2sg31ch6offlh01g5pb1ibhi5k0avk4f5ag?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=bce7b43d2d4cfdd140c2acd144583834&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/1040g2sg31ch6offlh01g5pb1ibhi5k0avk4f5ag?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=bce7b43d2d4cfdd140c2acd144583834&t=6aadc298",
+            "trace_id": "1040g2sg31ch6offlh01g5pb1ibhi5k0avk4f5ag",
+            "url": "https://sns-na-i11.xhscdn.com/1040g2sg31ch6offlh01g5pb1ibhi5k0avk4f5ag?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=bce7b43d2d4cfdd140c2acd144583834&t=6aadc298"
+          },
+          "user_info": {
+            "red_official_verified": false,
+            "red_id": "6696215256",
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo30s7bh1312m6g5pb1ibhi5k0ai38hldo?imageView2/2/w/80/format/jpg",
+            "show_red_official_verify_icon": false,
+            "red_official_verify_type": 0,
+            "nickname": "刘肆意",
+            "user_id": "656192e3000000000802d00a"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "title": "数据结构第三弹（期末复习版",
+            "guide_audited": true,
+            "image": "http://ci.xiaohongshu.com/1040g2sg31ch6offlh01g5pb1ibhi5k0avk4f5ag?imageView2/2/w/1080/format/jpg",
+            "content": "哈夫曼树、查找、排序（好难[哭惹R]）#保持更新  #日常生活碎片  #生活中的小碎片  #好好生活皆如所愿  #想分享",
+            "link": "https://www.xiaohongshu.com/discovery/item/67829507000000001703d432?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "model_type": "image_card",
+            "liked_count": 241,
+            "desc": "哈夫曼树、查找、排序（好难[哭惹R]）#保持更新[话题]# #日常生活碎片[话题]# #生活中的小碎片[话题]# #好好生活皆如所愿[话题]# #想分享点什么[话题]# #数据结构[话题]# #期末复习[话题]# #期末考试[话题]# #一些片刻[话题]#",
+            "title": "数据结构第三弹（期末复习版）",
+            "collected_count": 101,
+            "note_id": "67829507000000001703d432",
+            "collected": false,
+            "publish_time": {
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png",
+              "text": "2025-01-11"
+            },
+            "comments_count": 7,
+            "liked": false,
+            "shared_count": 0,
+            "cover_image_index": 0
+          }
+        },
+        {
+          "user_info": {
+            "red_official_verified": false,
+            "red_id": "6126858176",
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo318ot65170s6g5p5tjmnl76fm8a37ebg?imageView2/2/w/80/format/jpg",
+            "red_official_verify_type": 0,
+            "nickname": "春和景明_Sunshine🌞",
+            "show_red_official_verify_icon": false,
+            "user_id": "64bd9daf00000000140399f6"
+          },
+          "image_info": {
+            "fileid": "1040g2sg31c9brm5kgccg5p5tjmnl76fm04ca2i0",
+            "height": 3328,
+            "trace_id": "1040g2sg31c9brm5kgccg5p5tjmnl76fm04ca2i0",
+            "width": 2352,
+            "original": "https://sns-na-i11.xhscdn.com/1040g2sg31c9brm5kgccg5p5tjmnl76fm04ca2i0?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=e2be28522cc21a2946a2839730789389&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/1040g2sg31c9brm5kgccg5p5tjmnl76fm04ca2i0?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=e2be28522cc21a2946a2839730789389&t=6aadc298",
+            "need_load_original_image": true,
+            "url": "https://sns-na-i11.xhscdn.com/1040g2sg31c9brm5kgccg5p5tjmnl76fm04ca2i0?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=e2be28522cc21a2946a2839730789389&t=6aadc298"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "content": "两种题型的解题方法 都比较常考 需要的可以点赞收藏一下~ #数据结构  #数据结构与算法  #数据结构笔记  #树",
+            "guide_audited": true,
+            "image": "http://ci.xiaohongshu.com/1040g2sg31c9brm5kgccg5p5tjmnl76fm04ca2i0?imageView2/2/w/1080/format/jpg",
+            "title": "数据结构｜二叉树和森林转换＋前序中序后序",
+            "link": "https://www.xiaohongshu.com/discovery/item/677a8d09000000000902fde8?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "model_type": "image_card",
+            "liked_count": 315,
+            "desc": "两种题型的解题方法\n都比较常考\n需要的可以点赞收藏一下~\n#数据结构[话题]# #数据结构与算法[话题]# #数据结构笔记[话题]# #树[话题]# #二叉树[话题]#",
+            "title": "数据结构｜二叉树和森林转换＋前序中序后序",
+            "collected_count": 193,
+            "note_id": "677a8d09000000000902fde8",
+            "collected": false,
+            "publish_time": {
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png",
+              "text": "2025-01-05"
+            },
+            "comments_count": 5,
+            "liked": false,
+            "shared_count": 0,
+            "cover_image_index": 0
+          }
+        },
+        {
+          "image_info": {
+            "need_load_original_image": true,
+            "fileid": "1040g0083254bbbphjc3g5pisbso0u6r8j192cho",
+            "height": 1908,
+            "width": 1280,
+            "original": "https://sns-na-i11.xhscdn.com/1040g0083254bbbphjc3g5pisbso0u6r8j192cho?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=fcbf41de04c8b0c17a5b296e03a4e557&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/1040g0083254bbbphjc3g5pisbso0u6r8j192cho?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=fcbf41de04c8b0c17a5b296e03a4e557&t=6aadc298",
+            "trace_id": "1040g0083254bbbphjc3g5pisbso0u6r8j192cho",
+            "url": "https://sns-na-i11.xhscdn.com/1040g0083254bbbphjc3g5pisbso0u6r8j192cho?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=fcbf41de04c8b0c17a5b296e03a4e557&t=6aadc298"
+          },
+          "user_info": {
+            "red_official_verified": false,
+            "red_id": "11625946663",
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo323k66rsmnu5g5pisbso0u6r8ho4gcig?imageView2/2/w/80/format/jpg",
+            "show_red_official_verify_icon": false,
+            "red_official_verify_type": 0,
+            "nickname": "小时不摆烂",
+            "user_id": "665c5f300000000003031b68"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "title": "时间复杂度我终于会了！（数据结构篇",
+            "guide_audited": true,
+            "content": "时间复杂度，我终于会了！ 看了无数个复杂度总结和视频，终于有自己的思路了。 #计算机专业  #时间复杂度  #电子信息考",
+            "image": "http://ci.xiaohongshu.com/1040g0083254bbbphjc3g5pisbso0u6r8j192cho?imageView2/2/w/1080/format/jpg",
+            "link": "https://www.xiaohongshu.com/discovery/item/6aa8c507000000000b00e783?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "model_type": "image_card",
+            "liked_count": 78,
+            "desc": "时间复杂度，我终于会了！\n看了无数个复杂度总结和视频，终于有自己的思路了。\n#计算机专业[话题]# #时间复杂度[话题]# #电子信息考研[话题]# #计算机考研[话题]# #计算机[话题]# #考研复习[话题]# #学习技巧[话题]# #数据结构[话题]##启航408[话题]#",
+            "title": "时间复杂度我终于会了！（数据结构篇）",
+            "collected_count": 59,
+            "note_id": "6aa8c507000000000b00e783",
+            "collected": false,
+            "publish_time": {
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png",
+              "text": "3 day(s) ago"
+            },
+            "liked": false,
+            "comments_count": 10,
+            "shared_count": 0,
+            "cover_image_index": 0
+          }
+        },
+        {
+          "image_info": {
+            "fileid": "1040g00831b6juu2png6g5pcigo5ohbbv3drqo60",
+            "height": 2605,
+            "url": "https://sns-na-i11.xhscdn.com/1040g00831b6juu2png6g5pcigo5ohbbv3drqo60?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=bb8acc81e08f51c1f0f13223a447fda7&t=6aadc298",
+            "width": 1383,
+            "original": "https://sns-na-i11.xhscdn.com/1040g00831b6juu2png6g5pcigo5ohbbv3drqo60?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=bb8acc81e08f51c1f0f13223a447fda7&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/1040g00831b6juu2png6g5pcigo5ohbbv3drqo60?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=bb8acc81e08f51c1f0f13223a447fda7&t=6aadc298",
+            "trace_id": "1040g00831b6juu2png6g5pcigo5ohbbv3drqo60",
+            "need_load_original_image": true
+          },
+          "user_info": {
+            "red_official_verified": false,
+            "red_id": "9076954609",
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo32204djk57e6g5pcigo5ohbbvcr8sjcg?imageView2/2/w/80/format/jpg",
+            "red_official_verify_type": 0,
+            "nickname": "Gw",
+            "show_red_official_verify_icon": false,
+            "user_id": "6592860b000000002200ad7f"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "title": "数据结构",
+            "guide_audited": true,
+            "content": "空间复杂度，时间复杂度，抽象数据类型ADT#计算机  #数据结构与算法  #空间复杂度  #时间复杂度计算  #抽象数据",
+            "image": "http://ci.xiaohongshu.com/1040g00831b6juu2png6g5pcigo5ohbbv3drqo60?imageView2/2/w/1080/format/jpg",
+            "link": "https://www.xiaohongshu.com/discovery/item/6756f7950000000002024065?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "model_type": "image_card",
+            "liked_count": 202,
+            "desc": "空间复杂度，时间复杂度，抽象数据类型ADT#计算机[话题]# #数据结构与算法[话题]# #空间复杂度[话题]# #时间复杂度计算[话题]# #抽象数据类型[话题]#",
+            "title": "数据结构1",
+            "collected_count": 105,
+            "note_id": "6756f7950000000002024065",
+            "collected": false,
+            "publish_time": {
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png",
+              "text": "2024-12-09"
+            },
+            "liked": false,
+            "comments_count": 1,
+            "shared_count": 0,
+            "cover_image_index": 0
+          }
+        },
+        {
+          "image_info": {
+            "height": 2560,
+            "need_load_original_image": true,
+            "fileid": "1040g2sg31be4qgfvg2d04af2tio2oetil13v5go",
+            "width": 1793,
+            "original": "https://sns-na-i11.xhscdn.com/1040g2sg31be4qgfvg2d04af2tio2oetil13v5go?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=763fee92ed674450ef4c3296bafb602c&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/1040g2sg31be4qgfvg2d04af2tio2oetil13v5go?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=763fee92ed674450ef4c3296bafb602c&t=6aadc298",
+            "trace_id": "1040g2sg31be4qgfvg2d04af2tio2oetil13v5go",
+            "url": "https://sns-na-i11.xhscdn.com/1040g2sg31be4qgfvg2d04af2tio2oetil13v5go?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=763fee92ed674450ef4c3296bafb602c&t=6aadc298"
+          },
+          "user_info": {
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo31be4t0tcne6g4af2tio2oetigf7kq20?imageView2/2/w/80/format/jpg",
+            "red_official_verified": false,
+            "red_id": "602364754",
+            "show_red_official_verify_icon": false,
+            "red_official_verify_type": 0,
+            "nickname": "熙熙",
+            "user_id": "5b75302cb31a850001bd3bb2"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "title": "数据结构笔记总结",
+            "guide_audited": true,
+            "content": "#数据结构笔记  #c语言  #数据结构严蔚敏  数据结构（C语言版 第2版）前三章期末复习总结",
+            "image": "http://ci.xiaohongshu.com/1040g2sg31be4qgfvg2d04af2tio2oetil13v5go?imageView2/2/w/1080/format/jpg",
+            "link": "https://www.xiaohongshu.com/discovery/item/675eacbd0000000002034704?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "model_type": "image_card",
+            "liked_count": 607,
+            "desc": "#数据结构笔记[话题]# #c语言[话题]# #数据结构严蔚敏[话题]#\n数据结构（C语言版 第2版）前三章期末复习总结",
+            "title": "数据结构笔记总结",
+            "collected_count": 315,
+            "note_id": "675eacbd0000000002034704",
+            "collected": false,
+            "publish_time": {
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png",
+              "text": "2024-12-15"
+            },
+            "comments_count": 6,
+            "liked": false,
+            "shared_count": 0,
+            "cover_image_index": 0
+          }
+        },
+        {
+          "image_info": {
+            "fileid": "1040g2sg31tf2o1pum8gg5qc1vdomefh6chk5oeo",
+            "height": 2000,
+            "trace_id": "1040g2sg31tf2o1pum8gg5qc1vdomefh6chk5oeo",
+            "width": 1414,
+            "original": "https://sns-na-i11.xhscdn.com/1040g2sg31tf2o1pum8gg5qc1vdomefh6chk5oeo?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=5509bce81966bfcc1afa073740069475&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/1040g2sg31tf2o1pum8gg5qc1vdomefh6chk5oeo?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=5509bce81966bfcc1afa073740069475&t=6aadc298",
+            "need_load_original_image": true,
+            "url": "https://sns-na-i11.xhscdn.com/1040g2sg31tf2o1pum8gg5qc1vdomefh6chk5oeo?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=5509bce81966bfcc1afa073740069475&t=6aadc298"
+          },
+          "user_info": {
+            "red_official_verified": false,
+            "red_id": "18687072710",
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo31s4iq78b5a605qc1tu8o9714fa6unng?imageView2/2/w/80/format/jpg",
+            "show_red_official_verify_icon": false,
+            "red_official_verify_type": 0,
+            "nickname": "小柒老师、",
+            "user_id": "6981fb710000000019033e26"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "title": "速通计算机二级 | 数据结构与算法",
+            "guide_audited": true,
+            "image": "http://ci.xiaohongshu.com/1040g2sg31tf2o1pum8gg5qc1vdomefh6chk5oeo?imageView2/2/w/1080/format/jpg",
+            "content": "[玫瑰R]众所周知，除了平时实操较多的ppt，word，Excel等知识，计算机二级考试还会考察公共基础知识，包括数据结",
+            "link": "https://www.xiaohongshu.com/discovery/item/69a785100000000028023b4d?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "model_type": "image_card",
+            "liked_count": 4,
+            "desc": "[玫瑰R]众所周知，除了平时实操较多的ppt，word，Excel等知识，计算机二级考试还会考察公共基础知识，包括数据结构与算法、程序设计基础、软件工程基础、数据库设计基础四大板块，经过我一个月的精心整理，我整理出了这份数据结构与算法的理论知识，主要围绕“系统”而非“精细”或“简洁”整理而成[太阳R]\n可以结合大猫老师的视频一起食用[星R]\n#计算机二级[话题]# #数据结构与算法资料[话题]# #计算机二级备考[话题]# #计算机二级知识点[话题]# #数据结构与算法[话题]#",
+            "title": "速通计算机二级 | 数据结构与算法",
+            "collected_count": 6,
+            "note_id": "69a785100000000028023b4d",
+            "collected": false,
+            "publish_time": {
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png",
+              "text": "03-08"
+            },
+            "comments_count": 3,
+            "liked": false,
+            "shared_count": 0,
+            "cover_image_index": 0
+          }
+        },
+        {
+          "image_info": {
+            "need_load_original_image": true,
+            "fileid": "1040g00831qgqdpte7oe05ofvvkmk1ikehrtv3r8",
+            "height": 4096,
+            "width": 3072,
+            "original": "https://sns-na-i11.xhscdn.com/1040g00831qgqdpte7oe05ofvvkmk1ikehrtv3r8?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=645f2e4354e6d2f33f4ca1f33a31c2b9&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/1040g00831qgqdpte7oe05ofvvkmk1ikehrtv3r8?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=645f2e4354e6d2f33f4ca1f33a31c2b9&t=6aadc298",
+            "trace_id": "1040g00831qgqdpte7oe05ofvvkmk1ikehrtv3r8",
+            "url": "https://sns-na-i11.xhscdn.com/1040g00831qgqdpte7oe05ofvvkmk1ikehrtv3r8?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=645f2e4354e6d2f33f4ca1f33a31c2b9&t=6aadc298"
+          },
+          "user_info": {
+            "red_official_verified": false,
+            "red_id": "1436704820",
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/61fffd2d000000001000ca8e.jpg?imageView2/2/w/80/format/jpg",
+            "show_red_official_verify_icon": false,
+            "red_official_verify_type": 0,
+            "nickname": "零（已停氪已卸载恋与深空）",
+            "user_id": "61fffd2d000000001000ca8e"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "title": "Day15数据结构",
+            "guide_audited": true,
+            "image": "http://ci.xiaohongshu.com/1040g00831qgqdpte7oe05ofvvkmk1ikehrtv3r8?imageView2/2/w/1080/format/jpg",
+            "content": "#学在中南・21天笔记打卡计划  #百闻不如一记",
+            "link": "https://www.xiaohongshu.com/discovery/item/69443560000000001e029a8d?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "model_type": "image_card",
+            "liked_count": 2,
+            "desc": "#学在中南・21天笔记打卡计划[话题]# #百闻不如一记[话题]#",
+            "title": "Day15数据结构",
+            "collected_count": 0,
+            "note_id": "69443560000000001e029a8d",
+            "collected": false,
+            "publish_time": {
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png",
+              "text": "2025-12-25"
+            },
+            "liked": false,
+            "comments_count": 0,
+            "shared_count": 0,
+            "cover_image_index": 0
+          }
+        },
+        {
+          "image_info": {
+            "fileid": "1040g2sg31fc2imlc70dg5nu27qjg879vm68j658",
+            "height": 2964,
+            "url": "https://sns-na-i11.xhscdn.com/1040g2sg31fc2imlc70dg5nu27qjg879vm68j658?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=d1812df7c758d2aab12e34b955b8c47e&t=6aadc298",
+            "width": 2095,
+            "original": "https://sns-na-i11.xhscdn.com/1040g2sg31fc2imlc70dg5nu27qjg879vm68j658?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=d1812df7c758d2aab12e34b955b8c47e&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/1040g2sg31fc2imlc70dg5nu27qjg879vm68j658?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=d1812df7c758d2aab12e34b955b8c47e&t=6aadc298",
+            "trace_id": "1040g2sg31fc2imlc70dg5nu27qjg879vm68j658",
+            "need_load_original_image": true
+          },
+          "user_info": {
+            "red_id": "1023015193",
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo31cehggf70e405nu27qjg879v02roipo?imageView2/2/w/80/format/jpg",
+            "red_official_verified": false,
+            "red_official_verify_type": 0,
+            "nickname": "小红薯5FC3A048",
+            "show_red_official_verify_icon": false,
+            "user_id": "5fc23ea70000000001001d3f"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "content": "图 #数据结构与算法",
+            "title": "数据结构与算法",
+            "image": "http://ci.xiaohongshu.com/1040g2sg31fc2imlc70dg5nu27qjg879vm68j658?imageView2/2/w/1080/format/jpg",
+            "guide_audited": true,
+            "link": "https://www.xiaohongshu.com/discovery/item/67dfa07e000000001d0163db?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "model_type": "image_card",
+            "liked_count": 7,
+            "desc": "图  #数据结构与算法[话题]#",
+            "title": "数据结构与算法(4)",
+            "collected_count": 2,
+            "note_id": "67dfa07e000000001d0163db",
+            "collected": false,
+            "publish_time": {
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png",
+              "text": "2025-03-23"
+            },
+            "comments_count": 0,
+            "liked": false,
+            "shared_count": 0,
+            "cover_image_index": 0
+          }
+        },
+        {
+          "image_info": {
+            "need_load_original_image": true,
+            "fileid": "spectrum/1040g34o321o8vts9741g5p9j4icaj7dd006uld8",
+            "height": 1660,
+            "width": 1242,
+            "original": "https://sns-na-i11.xhscdn.com/spectrum/1040g34o321o8vts9741g5p9j4icaj7dd006uld8?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=dda2e2f5557c2dc5e38bf6d3c752ce7c&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/spectrum/1040g34o321o8vts9741g5p9j4icaj7dd006uld8?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=dda2e2f5557c2dc5e38bf6d3c752ce7c&t=6aadc298",
+            "trace_id": "spectrum/1040g34o321o8vts9741g5p9j4icaj7dd006uld8",
+            "url": "https://sns-na-i11.xhscdn.com/spectrum/1040g34o321o8vts9741g5p9j4icaj7dd006uld8?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=dda2e2f5557c2dc5e38bf6d3c752ce7c&t=6aadc298"
+          },
+          "user_info": {
+            "red_official_verified": false,
+            "red_id": "49298681955",
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/6879e8a5f0e62e0001ec5db7.jpg?imageView2/2/w/80/format/jpg",
+            "show_red_official_verify_icon": false,
+            "red_official_verify_type": 0,
+            "nickname": "咕泡蹦蹦聊职场",
+            "user_id": "65332498000000002a019dad"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "content": "图中共包括: Array 数组, Linked List 链表, , Stack 栈, Queue 队列,Hash Ta",
+            "guide_audited": true,
+            "image": "http://ci.xiaohongshu.com/spectrum/1040g34o321o8vts9741g5p9j4icaj7dd006uld8?imageView2/2/w/1080/format/jpg",
+            "title": "一图总结开发中最常用的7种数据结构",
+            "link": "https://www.xiaohongshu.com/discovery/item/6a39f2170000000007028792?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "cover_image_index": 0,
+            "liked_count": 11,
+            "desc": "图中共包括: Array 数组, Linked List 链表, , Stack 栈, Queue 队列,Hash Table 哈希表， Tree 树，Graph 图 等7种日常开发时最常用到的数据结构。\n#互联网大厂[话题]# #985211[话题]# #前端入门[话题]# #java[话题]# #编程[话题]# #计算机专业[话题]# #计算机留学生[话题]# #java架构[话题]# #嵌入式开发[话题]# #后端开发[话题]#",
+            "title": "一图总结开发中最常用的7种数据结构！！",
+            "collected_count": 12,
+            "note_id": "6a39f2170000000007028792",
+            "collected": false,
+            "publish_time": {
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png",
+              "text": "06-24"
+            },
+            "comments_count": 1,
+            "liked": false,
+            "shared_count": 0,
+            "model_type": "image_card"
+          }
+        },
+        {
+          "image_info": {
+            "fileid": "1040g00831sc58ol0586g5q9fjm0toa8b8gpo14o",
+            "height": 1420,
+            "trace_id": "1040g00831sc58ol0586g5q9fjm0toa8b8gpo14o",
+            "width": 1080,
+            "original": "https://sns-na-i11.xhscdn.com/1040g00831sc58ol0586g5q9fjm0toa8b8gpo14o?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=d93cf951149f183aec464f06261f3811&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/1040g00831sc58ol0586g5q9fjm0toa8b8gpo14o?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=d93cf951149f183aec464f06261f3811&t=6aadc298",
+            "need_load_original_image": true,
+            "url": "https://sns-na-i11.xhscdn.com/1040g00831sc58ol0586g5q9fjm0toa8b8gpo14o?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=d93cf951149f183aec464f06261f3811&t=6aadc298"
+          },
+          "user_info": {
+            "red_official_verified": false,
+            "red_id": "42037776897",
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo31pqvdnnml45g5q9fjm0toa8bbetb0a8?imageView2/2/w/80/format/jpg",
+            "show_red_official_verify_icon": false,
+            "red_official_verify_type": 0,
+            "nickname": "教育编程充电站",
+            "user_id": "692f9d81000000003700290b"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "title": "编程必存🔥10大常用数据结构一图全搞定",
+            "guide_audited": true,
+            "image": "http://ci.xiaohongshu.com/1040g00831sc58ol0586g5q9fjm0toa8b8gpo14o?imageView2/2/w/1080/format/jpg",
+            "content": "谁还在死磕数据结构啊😭 这张图直接把最常用10种讲得明明白白！ 图解+场景+用途全都有，新手秒懂✨ 整理包含： ✅ Ar",
+            "link": "https://www.xiaohongshu.com/discovery/item/6989b292000000000b0081b6?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "cover_image_index": 0,
+            "liked_count": 3,
+            "desc": "谁还在死磕数据结构啊😭\n这张图直接把最常用10种讲得明明白白！\n图解+场景+用途全都有，新手秒懂✨\n整理包含：\n✅ Array 数组\n✅ Stack 栈\n✅ Queue 队列\n✅ Heap 堆\n✅ List 列表\n✅ Tree 树\n✅ R-tree R树\n✅ Graph 图\n✅ Hash Table 哈希表\n✅ Suffix Tree 后缀树\n每一种都配清晰图解，不用死记硬背\n还标注了真实开发场景，知道为啥这么设计\n不管是初学、面试、转码、刷题都超级实用！\n建议码住慢慢看👉\n数据结构底子打好，算法&代码能力直接起飞🚀\n#算法 #数据结构 #编程 #程序员 #计算机 #转码 #互联网 #软件 #java #python #编程学习 #后端开发 #面试干货",
+            "title": "编程必存🔥10大常用数据结构一图全搞定！",
+            "collected_count": 1,
+            "note_id": "6989b292000000000b0081b6",
+            "collected": false,
+            "publish_time": {
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png",
+              "text": "02-09"
+            },
+            "liked": false,
+            "comments_count": 0,
+            "shared_count": 0,
+            "model_type": "image_card"
+          }
+        },
+        {
+          "image_info": {
+            "fileid": "1040g00831qgqdpte7oeg5ofvvkmk1ikeuf6s6lg",
+            "height": 4096,
+            "trace_id": "1040g00831qgqdpte7oeg5ofvvkmk1ikeuf6s6lg",
+            "width": 3072,
+            "original": "https://sns-na-i11.xhscdn.com/1040g00831qgqdpte7oeg5ofvvkmk1ikeuf6s6lg?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=d39aa5ec9a4fd763b0d42813f1d32ea5&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/1040g00831qgqdpte7oeg5ofvvkmk1ikeuf6s6lg?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=d39aa5ec9a4fd763b0d42813f1d32ea5&t=6aadc298",
+            "need_load_original_image": true,
+            "url": "https://sns-na-i11.xhscdn.com/1040g00831qgqdpte7oeg5ofvvkmk1ikeuf6s6lg?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=d39aa5ec9a4fd763b0d42813f1d32ea5&t=6aadc298"
+          },
+          "user_info": {
+            "red_official_verified": false,
+            "red_id": "1436704820",
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/61fffd2d000000001000ca8e.jpg?imageView2/2/w/80/format/jpg",
+            "show_red_official_verify_icon": false,
+            "red_official_verify_type": 0,
+            "nickname": "零（已停氪已卸载恋与深空）",
+            "user_id": "61fffd2d000000001000ca8e"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "title": "Day17数据结构",
+            "guide_audited": true,
+            "content": "#学在中南・21天笔记打卡计划  #百闻不如一记",
+            "image": "http://ci.xiaohongshu.com/1040g00831qgqdpte7oeg5ofvvkmk1ikeuf6s6lg?imageView2/2/w/1080/format/jpg",
+            "link": "https://www.xiaohongshu.com/discovery/item/6946538e000000001e02144d?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "model_type": "image_card",
+            "liked_count": 1,
+            "desc": "#学在中南・21天笔记打卡计划[话题]# #百闻不如一记[话题]#",
+            "title": "Day17数据结构",
+            "collected_count": 0,
+            "note_id": "6946538e000000001e02144d",
+            "collected": false,
+            "publish_time": {
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png",
+              "text": "2025-12-25"
+            },
+            "liked": false,
+            "comments_count": 0,
+            "shared_count": 0,
+            "cover_image_index": 0
+          }
+        },
+        {
+          "user_info": {
+            "red_id": "1026908637",
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo31pok0fjckk405ns722808r5g3o9msuo?imageView2/2/w/80/format/jpg",
+            "red_official_verified": false,
+            "nickname": "有趣的科学",
+            "show_red_official_verify_icon": false,
+            "red_official_verify_type": 0,
+            "user_id": "5f8710900000000001006cb0"
+          },
+          "image_info": {
+            "fileid": "spectrum/1040g34o31re0pklngm0g5ns722808r5gr5dg9ao",
+            "height": 1350,
+            "need_load_original_image": true,
+            "width": 1080,
+            "original": "https://sns-na-i11.xhscdn.com/spectrum/1040g34o31re0pklngm0g5ns722808r5gr5dg9ao?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=95582560499ff586d070e032cad27784&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/spectrum/1040g34o31re0pklngm0g5ns722808r5gr5dg9ao?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=95582560499ff586d070e032cad27784&t=6aadc298",
+            "trace_id": "spectrum/1040g34o31re0pklngm0g5ns722808r5gr5dg9ao",
+            "url": "https://sns-na-i11.xhscdn.com/spectrum/1040g34o31re0pklngm0g5ns722808r5gr5dg9ao?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=95582560499ff586d070e032cad27784&t=6aadc298"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "title": "你在编程面试中应该了解的12个数据结构",
+            "guide_audited": true,
+            "content": "你在编程面试中应该了解的12个数据结构： 1. 数组 - 固定大小的元素集合，存储在连续内存中。 - 基于索引提供 O",
+            "image": "http://ci.xiaohongshu.com/spectrum/1040g34o31re0pklngm0g5ns722808r5gr5dg9ao?imageView2/2/w/1080/format/jpg",
+            "link": "https://www.xiaohongshu.com/discovery/item/696ad5f1000000000a03142a?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "cover_image_index": 0,
+            "liked_count": 11,
+            "desc": "你在编程面试中应该了解的12个数据结构：\n1. 数组 - 固定大小的元素集合，存储在连续内存中。 - 基于索引提供 O（1）访问。\n2. 矩阵（二维数组） - 用于表示网格、图形和动态规划问题的多维数组。\n3. 链表 - 一种动态数据结构，元素（节点）通过指针连接。 - 类型：单链表、双链表、循环链表。\n4. 叠加 - 后进先出（LIFO）数据结构，其中最后添加的元素首先被移除。 - 支持推送、弹出和窥视作，时间为 O（1）。\n5. 排队 - 先进先出（FIFO）数据结构。 - 允许在 O（1）时间内从后方插入（入队）并从前方移除（出队）。 - 用于按添加元素的顺序处理。\n6. 哈希图 - 一种键值数据结构，使用哈希函数进行快速查找。 - 提供 O（1） 的平均插入/删除/搜索时间，O（N）（因碰撞导致的最坏情况）\n7. 树 - 具有根节点和子节点的分层数据结构。 - 类型：二元树、N 元树、AVL 树、红黑树。\n8. 二叉搜索树（BST） - 一棵特殊的树，左子节点<根<右子节点。 - 在平衡 BST 中启用 O（log N）搜索、插入和删除。\n9. 堆（优先队列） - 基于二叉树的结构，父节点始终大于其子节点（最大堆）或最小堆（最小堆）。 - 提供 O（log N） 插入/删除，O（1） 获取最小值/最大值。\n10. Trie - 一种用于快速字符串搜索的树状结构。 - 提供 O（M） 插入/搜索/删除，其中 M 是字符串长度。\n11. 图 - 由边连接的节点（顶点）集合。 - 使用邻接列表（高效）或邻接矩阵表示。 - 类型：有向、无向、加权、无加权。\n2. 并集求（不相交集） - 用于高效处理动态连接性的数据结构。 - 支持 Union（x， y）和 Find（x）的近 O（1）时间（带有路径压缩）。 - 在检测环和寻找图中的连通分量时非常有用。#算法[话题]# #网络工程师[话题]# #编程[话题]# #信息技术[话题]# #c语言学习[话题]# #深度学习与神经网络[话题]# #信息学奥赛[话题]# #少儿编程[话题]#",
+            "title": "你在编程面试中应该了解的12个数据结构",
+            "collected_count": 16,
+            "note_id": "696ad5f1000000000a03142a",
+            "collected": false,
+            "publish_time": {
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png",
+              "text": "01-17"
+            },
+            "liked": false,
+            "comments_count": 0,
+            "shared_count": 0,
+            "model_type": "image_card"
+          }
+        },
+        {
+          "image_info": {
+            "need_load_original_image": true,
+            "fileid": "1040g2sg311qglsmggo005p4em55k8cfvarcofm8",
+            "height": 1416,
+            "width": 764,
+            "original": "https://sns-na-i11.xhscdn.com/1040g2sg311qglsmggo005p4em55k8cfvarcofm8?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=8588934c1741d4d9627dcf37b26944b2&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/1040g2sg311qglsmggo005p4em55k8cfvarcofm8?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=8588934c1741d4d9627dcf37b26944b2&t=6aadc298",
+            "trace_id": "1040g2sg311qglsmggo005p4em55k8cfvarcofm8",
+            "url": "https://sns-na-i11.xhscdn.com/1040g2sg311qglsmggo005p4em55k8cfvarcofm8?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=8588934c1741d4d9627dcf37b26944b2&t=6aadc298"
+          },
+          "user_info": {
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/67432ffa899e80222591e1dc.jpg?imageView2/2/w/80/format/jpg",
+            "red_official_verified": false,
+            "red_id": "94750457052",
+            "show_red_official_verify_icon": false,
+            "red_official_verify_type": 0,
+            "nickname": "韬🍑宝",
+            "user_id": "648eb14b00000000110031ff"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "content": "数据结构的顺序表图书管理系统代码（dd） #学习日常  #保持更新",
+            "guide_audited": true,
+            "image": "http://ci.xiaohongshu.com/1040g2sg311qglsmggo005p4em55k8cfvarcofm8?imageView2/2/w/1080/format/jpg",
+            "title": "数据结构的顺序表图书管理系统代码（dd） #学习日常  #保持更新",
+            "link": "https://www.xiaohongshu.com/discovery/item/6623a97d000000001c009334?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "cover_image_index": 0,
+            "liked_count": 164,
+            "desc": "数据结构的顺序表图书管理系统代码（dd）\n#学习日常[话题]# #保持更新[话题]#",
+            "title": "",
+            "collected_count": 118,
+            "note_id": "6623a97d000000001c009334",
+            "collected": false,
+            "publish_time": {
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png",
+              "text": "2025-03-18"
+            },
+            "comments_count": 52,
+            "liked": false,
+            "shared_count": 0,
+            "model_type": "image_card"
+          }
+        },
+        {
+          "image_info": {
+            "fileid": "notes_pre_post/1040g3k031iv11n4h0o005o6rq2a09adnl5gm15o",
+            "height": 1018,
+            "trace_id": "notes_pre_post/1040g3k031iv11n4h0o005o6rq2a09adnl5gm15o",
+            "width": 720,
+            "original": "https://sns-na-i11.xhscdn.com/notes_pre_post/1040g3k031iv11n4h0o005o6rq2a09adnl5gm15o?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=57b4274ca444fae0bed6a60d5cb0d833&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/notes_pre_post/1040g3k031iv11n4h0o005o6rq2a09adnl5gm15o?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=57b4274ca444fae0bed6a60d5cb0d833&t=6aadc298",
+            "need_load_original_image": true,
+            "url": "https://sns-na-i11.xhscdn.com/notes_pre_post/1040g3k031iv11n4h0o005o6rq2a09adnl5gm15o?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=57b4274ca444fae0bed6a60d5cb0d833&t=6aadc298"
+          },
+          "user_info": {
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo320f3thib6k6g5o6rq2a09adnlqurieg?imageView2/2/w/80/format/jpg",
+            "red_official_verified": false,
+            "red_id": "13841669328V",
+            "nickname": "大学笔记分享",
+            "show_red_official_verify_icon": false,
+            "red_official_verify_type": 0,
+            "user_id": "60dbd094000000000100a9b7"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "content": "#大学生期末考试  #大学生期末考试周破防  #计算机考研  #应用统计  #c语言学习  #计算机科学与技术  #电子",
+            "title": "数据结构",
+            "image": "http://ci.xiaohongshu.com/notes_pre_post/1040g3k031iv11n4h0o005o6rq2a09adnl5gm15o?imageView2/2/w/1080/format/jpg",
+            "guide_audited": true,
+            "link": "https://www.xiaohongshu.com/discovery/item/68555681000000001201508d?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "model_type": "image_card",
+            "liked_count": 2,
+            "desc": "#大学生期末考试[话题]#\n#大学生期末考试周破防[话题]#\n#计算机考研[话题]#\n#应用统计[话题]#\n#c语言学习[话题]#\n#计算机科学与技术[话题]#\n#电子信息考研[话题]#\n#计量经济学[话题]#\n#线性代数[话题]#\n#数学建模[话题]#",
+            "title": "数据结构",
+            "collected_count": 3,
+            "note_id": "68555681000000001201508d",
+            "collected": false,
+            "publish_time": {
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png",
+              "text": "2025-06-20"
+            },
+            "comments_count": 0,
+            "liked": false,
+            "shared_count": 0,
+            "cover_image_index": 0
+          }
+        },
+        {
+          "image_info": {
+            "fileid": "1040g00831qgqdpte7ofg5ofvvkmk1ikec1thoq8",
+            "height": 4096,
+            "trace_id": "1040g00831qgqdpte7ofg5ofvvkmk1ikec1thoq8",
+            "width": 3072,
+            "original": "https://sns-na-i11.xhscdn.com/1040g00831qgqdpte7ofg5ofvvkmk1ikec1thoq8?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=de36751dcfe37ec9a00092ab9369f474&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/1040g00831qgqdpte7ofg5ofvvkmk1ikec1thoq8?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=de36751dcfe37ec9a00092ab9369f474&t=6aadc298",
+            "need_load_original_image": true,
+            "url": "https://sns-na-i11.xhscdn.com/1040g00831qgqdpte7ofg5ofvvkmk1ikec1thoq8?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=de36751dcfe37ec9a00092ab9369f474&t=6aadc298"
+          },
+          "user_info": {
+            "red_official_verified": false,
+            "red_id": "1436704820",
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/61fffd2d000000001000ca8e.jpg?imageView2/2/w/80/format/jpg",
+            "red_official_verify_type": 0,
+            "nickname": "零（已停氪已卸载恋与深空）",
+            "show_red_official_verify_icon": false,
+            "user_id": "61fffd2d000000001000ca8e"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "content": "#百闻不如一记  #学在中南・21天笔记打卡计划",
+            "guide_audited": true,
+            "image": "http://ci.xiaohongshu.com/1040g00831qgqdpte7ofg5ofvvkmk1ikec1thoq8?imageView2/2/w/1080/format/jpg",
+            "title": "Day20数据结构",
+            "link": "https://www.xiaohongshu.com/discovery/item/694accb2000000001e036e91?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "model_type": "image_card",
+            "liked_count": 2,
+            "desc": "#百闻不如一记[话题]# #学在中南・21天笔记打卡计划[话题]#",
+            "title": "Day20数据结构",
+            "collected_count": 0,
+            "note_id": "694accb2000000001e036e91",
+            "collected": false,
+            "publish_time": {
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png",
+              "text": "2025-12-25"
+            },
+            "comments_count": 0,
+            "liked": false,
+            "shared_count": 0,
+            "cover_image_index": 0
+          }
+        },
+        {
+          "image_info": {
+            "need_load_original_image": true,
+            "fileid": "notes_pre_post/1040g3k831ogs18fe4q005p4aq76k6t4qfmqjqjg",
+            "height": 2157,
+            "width": 1668,
+            "original": "https://sns-na-i11.xhscdn.com/notes_pre_post/1040g3k831ogs18fe4q005p4aq76k6t4qfmqjqjg?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=d045300b49916bbe36d261dad195af1d&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/notes_pre_post/1040g3k831ogs18fe4q005p4aq76k6t4qfmqjqjg?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=d045300b49916bbe36d261dad195af1d&t=6aadc298",
+            "trace_id": "notes_pre_post/1040g3k831ogs18fe4q005p4aq76k6t4qfmqjqjg",
+            "url": "https://sns-na-i11.xhscdn.com/notes_pre_post/1040g3k831ogs18fe4q005p4aq76k6t4qfmqjqjg?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=d045300b49916bbe36d261dad195af1d&t=6aadc298"
+          },
+          "user_info": {
+            "red_id": "2201946159",
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/d784fc20c996f3d2f39d034c404f234e.jpg?imageView2/2/w/80/format/jpg",
+            "red_official_verified": false,
+            "red_official_verify_type": 0,
+            "nickname": "cicada",
+            "show_red_official_verify_icon": false,
+            "user_id": "648ad1cd000000001003749a"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "title": "数据结构期中复习",
+            "guide_audited": true,
+            "image": "http://ci.xiaohongshu.com/notes_pre_post/1040g3k831ogs18fe4q005p4aq76k6t4qfmqjqjg?imageView2/2/w/1080/format/jpg",
+            "content": "#手写笔记  #数据结构  #应用数学专业",
+            "link": "https://www.xiaohongshu.com/discovery/item/690b737000000000070339ac?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "cover_image_index": 0,
+            "liked_count": 2839,
+            "desc": "#手写笔记[话题]# #数据结构[话题]# #应用数学专业[话题]#",
+            "title": "数据结构期中复习",
+            "collected_count": 1943,
+            "note_id": "690b737000000000070339ac",
+            "collected": false,
+            "publish_time": {
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png",
+              "text": "2025-11-05"
+            },
+            "comments_count": 27,
+            "liked": false,
+            "shared_count": 0,
+            "model_type": "image_card"
+          }
+        },
+        {
+          "image_info": {
+            "fileid": "1040g2sg31uu7bgvb2ikg5nu2s9s082uejgkotlo",
+            "height": 4096,
+            "need_load_original_image": true,
+            "width": 3072,
+            "original": "https://sns-na-i11.xhscdn.com/1040g2sg31uu7bgvb2ikg5nu2s9s082uejgkotlo?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=2f103fdc220a58e6db5812e8cd0a6872&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/1040g2sg31uu7bgvb2ikg5nu2s9s082uejgkotlo?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=2f103fdc220a58e6db5812e8cd0a6872&t=6aadc298",
+            "trace_id": "1040g2sg31uu7bgvb2ikg5nu2s9s082uejgkotlo",
+            "url": "https://sns-na-i11.xhscdn.com/1040g2sg31uu7bgvb2ikg5nu2s9s082uejgkotlo?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=2f103fdc220a58e6db5812e8cd0a6872&t=6aadc298"
+          },
+          "user_info": {
+            "red_official_verified": false,
+            "red_id": "1092353987",
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo31uunj7b3ii6g5nu2s9s082ue6ie7of8?imageView2/2/w/80/format/jpg",
+            "show_red_official_verify_icon": false,
+            "red_official_verify_type": 0,
+            "nickname": "默言随风",
+            "user_id": "5fc2e2780000000001000bce"
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "content": "#计算机专业  #考研  #数据结构与算法  #083500软件工程  #考研笔记 #排序",
+            "guide_audited": true,
+            "image": "http://ci.xiaohongshu.com/1040g2sg31uu7bgvb2ikg5nu2s9s082uejgkotlo?imageView2/2/w/1080/format/jpg",
+            "title": "数据结构｜排序",
+            "link": "https://www.xiaohongshu.com/discovery/item/69ddbbbc000000001e00f55e?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "cover_image_index": 0,
+            "liked_count": 15,
+            "desc": "#计算机专业[话题]# #考研[话题]# #数据结构与算法[话题]# #083500软件工程[话题]# #考研笔记[话题]##排序[话题]#",
+            "title": "数据结构｜排序",
+            "collected_count": 10,
+            "note_id": "69ddbbbc000000001e00f55e",
+            "collected": false,
+            "publish_time": {
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png",
+              "text": "04-14"
+            },
+            "liked": false,
+            "comments_count": 0,
+            "shared_count": 0,
+            "model_type": "image_card"
+          }
+        },
+        {
+          "user_info": {
+            "images": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo31bl0aglagc5g5o31jt408g0r31thako?imageView2/2/w/80/format/jpg",
+            "red_official_verified": false,
+            "red_id": "2653143928",
+            "nickname": "UoU",
+            "show_red_official_verify_icon": false,
+            "red_official_verify_type": 0,
+            "user_id": "60619f48000000000100401b"
+          },
+          "image_info": {
+            "fileid": "1040g00831c0jfv39126g5o31jt408g0rqk814qo",
+            "height": 2558,
+            "url": "https://sns-na-i11.xhscdn.com/1040g00831c0jfv39126g5o31jt408g0rqk814qo?imageView2/2/w/576/format/webp/q/87%7CimageMogr2/strip&redImage/frame/0&ap=5&sc=IMGTAB_PRV&sign=30c24a2baa65e0fb2a9b5427af658d6f&t=6aadc298",
+            "width": 1693,
+            "original": "https://sns-na-i11.xhscdn.com/1040g00831c0jfv39126g5o31jt408g0rqk814qo?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=30c24a2baa65e0fb2a9b5427af658d6f&t=6aadc298",
+            "url_size_large": "https://sns-na-i11.xhscdn.com/1040g00831c0jfv39126g5o31jt408g0rqk814qo?imageView2/2/w/5000/h/5000/format/webp/q/90&ap=5&sc=IMGTAB_ZOOM&sign=30c24a2baa65e0fb2a9b5427af658d6f&t=6aadc298",
+            "trace_id": "1040g00831c0jfv39126g5o31jt408g0rqk814qo",
+            "need_load_original_image": true
+          },
+          "share_info": {
+            "function_entries": [
+              {
+                "type": "generate_image"
+              },
+              {
+                "type": "copy_link"
+              },
+              {
+                "type": "dislike"
+              },
+              {
+                "type": "report"
+              }
+            ],
+            "content": "数据结构排序#数据结构 #数据结构排序",
+            "guide_audited": true,
+            "image": "http://ci.xiaohongshu.com/1040g00831c0jfv39126g5o31jt408g0rqk814qo?imageView2/2/w/1080/format/jpg",
+            "title": "数据结构排序",
+            "link": "https://www.xiaohongshu.com/discovery/item/6771938000000000140243c0?app_platform=ios&app_version=9.31.2&share_from_user_hidden=true&type=NORMAL"
+          },
+          "note_info": {
+            "cover_image_index": 0,
+            "liked_count": 24,
+            "desc": "数据结构排序#数据结构[话题]##数据结构排序[话题]#",
+            "title": "数据结构排序",
+            "collected_count": 8,
+            "note_id": "6771938000000000140243c0",
+            "collected": false,
+            "publish_time": {
+              "text": "2024-12-30",
+              "icon": "http://picasso-static.xiaohongshu.com/fe-platform/e9b67af62f67d9d6cfac936f96ad10a85fdb868e.png"
+            },
+            "comments_count": 0,
+            "liked": false,
+            "shared_count": 0,
+            "model_type": "image_card"
+          }
+        }
+      ],
+      "filter_items": [
+        {
+          "word_request_id": "d4a677ea-e10d-4d7f-bddf-b28d80120807",
+          "id": "filter_hot",
+          "filter_tags": [
+            {
+              "icon_tail_url_night": "",
+              "id": "综合",
+              "icon_tail_url": "",
+              "icon_url_night": "",
+              "icon_url": "",
+              "show_type": 2,
+              "origin_text": "",
+              "selected": false,
+              "name": "Top",
+              "need_location_info": false
+            },
+            {
+              "icon_tail_url_night": "",
+              "id": "最新",
+              "icon_tail_url": "",
+              "selected": false,
+              "origin_text": "数据结构",
+              "show_type": 2,
+              "icon_url": "",
+              "icon_url_night": "",
+              "need_location_info": false,
+              "name": "Latest"
+            },
+            {
+              "icon_tail_url_night": "",
+              "icon_tail_url": "",
+              "id": "电子书",
+              "icon_url_night": "",
+              "origin_text": "数据结构电子书",
+              "icon_url": "",
+              "show_type": 2,
+              "selected": false,
+              "name": "电子书",
+              "need_location_info": false
+            },
+            {
+              "icon_tail_url_night": "",
+              "id": "网课推荐",
+              "icon_tail_url": "",
+              "icon_url_night": "",
+              "selected": false,
+              "show_type": 2,
+              "origin_text": "数据结构网课推荐",
+              "icon_url": "",
+              "name": "网课推荐",
+              "need_location_info": false
+            },
+            {
+              "icon_tail_url_night": "",
+              "id": "笔记",
+              "icon_tail_url": "",
+              "icon_url_night": "",
+              "icon_url": "",
+              "show_type": 2,
+              "origin_text": "数据结构笔记",
+              "selected": false,
+              "need_location_info": false,
+              "name": "笔记"
+            },
+            {
+              "icon_tail_url_night": "",
+              "id": "基础知识",
+              "icon_tail_url": "",
+              "selected": false,
+              "icon_url": "",
+              "show_type": 2,
+              "origin_text": "数据结构基础知识",
+              "icon_url_night": "",
+              "name": "基础知识",
+              "need_location_info": false
+            },
+            {
+              "icon_tail_url_night": "",
+              "id": "专升本",
+              "icon_tail_url": "",
+              "selected": false,
+              "origin_text": "数据结构专升本",
+              "show_type": 2,
+              "icon_url": "",
+              "icon_url_night": "",
+              "need_location_info": false,
+              "name": "专升本"
+            },
+            {
+              "icon_tail_url_night": "",
+              "id": "应用题",
+              "icon_tail_url": "",
+              "selected": false,
+              "icon_url": "",
+              "show_type": 2,
+              "origin_text": "数据结构应用题",
+              "icon_url_night": "",
+              "need_location_info": false,
+              "name": "应用题"
+            },
+            {
+              "icon_tail_url_night": "",
+              "icon_tail_url": "",
+              "id": "打卡表",
+              "icon_url_night": "",
+              "origin_text": "数据结构打卡表",
+              "show_type": 2,
+              "icon_url": "",
+              "selected": false,
+              "need_location_info": false,
+              "name": "打卡表"
+            },
+            {
+              "icon_tail_url_night": "",
+              "id": "选择题",
+              "icon_tail_url": "",
+              "icon_url_night": "",
+              "origin_text": "数据结构选择题",
+              "show_type": 2,
+              "icon_url": "",
+              "selected": false,
+              "need_location_info": false,
+              "name": "选择题"
+            },
+            {
+              "icon_tail_url_night": "",
+              "id": "辅导",
+              "icon_tail_url": "",
+              "icon_url_night": "",
+              "origin_text": "数据结构辅导",
+              "icon_url": "",
+              "selected": false,
+              "show_type": 2,
+              "name": "辅导",
+              "need_location_info": false
+            },
+            {
+              "icon_tail_url_night": "",
+              "id": "补考",
+              "icon_tail_url": "",
+              "icon_url_night": "",
+              "origin_text": "数据结构补考",
+              "icon_url": "",
+              "selected": false,
+              "show_type": 2,
+              "need_location_info": false,
+              "name": "补考"
+            }
+          ],
+          "type": "single",
+          "name": "热门词",
+          "group_show_type": 1
+        }
+      ]
+    },
+    "msg": "成功",
+    "search_id": "3f2f906cdace4a1b",
+    "search_session_id": "b6f9f597b29d430aa9d6cadbe05c4d7e",
+    "word_request_id": "722b9351576e458582afe6bf788b6c2e",
+    "page": 1,
+    "next_page": 2,
+    "debug_id": "3feb0a80",
+    "debug_info": "gAAAAABqrcKYj5SZbv1GTjczXPNZN0aq4o28gNITSbooQGHONhYf9iALuubJiXU4TB6s0Xs4ACjnwGRsEvtM6bKP5ot9lYoGkh4BvidB83qKUiA8QNU5Ksb-dpAzA6xWjt1nq4ljrv5gLfCjJQPGSBvPVuyeHPamP_YJpHJ3R94DUsHoiUVV7Qeibwp9XUPzNuLV9ExtWwvrwy7xmaDWNfc3kkm8y9bay8MgX5hL3slwHAfXWfVHVxp18ZX9WZRYc9UzogUScgCl0M4rW6gQzdUAwo9XISSS-plUUgM7ZM8kitEu2apeeDMjt_4iacNhC1mJg3ZBIJno2h1i8FlFDLoprsfwub1BWAH4_XPfIJ_nY3X0Otj4X4vYV56IWztkqSQbDFbcreKtA00k-Dk-qsAwpmeEYik-lPI1ivQeahm1ozTSuUbJVXo="
+  }
+}

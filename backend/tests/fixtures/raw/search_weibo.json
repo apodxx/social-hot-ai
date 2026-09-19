@@ -1,0 +1,339 @@
+{
+  "code": 200,
+  "request_id": "65bec0d4-a9b2-422c-b027-873bcb69eec4",
+  "message": "Request successful. This request will incur a charge.",
+  "message_zh": "请求成功，本次请求将被计费。",
+  "support": "Discord: https://discord.gg/aMEAS8Xsvz",
+  "time": "2026-09-18 05:16:49",
+  "time_stamp": 1789733809,
+  "time_zone": "America/Los_Angeles",
+  "docs": "https://api.tikhub.io/#/Weibo-Web-V2-API/fetch_pic_search_api_v1_weibo_web_v2_fetch_pic_search_get",
+  "cache_message": "This response is cached and accessible via the URL below for 24 hours at no extra cost. The cache is for request tracing only — it doesn't affect the API's data freshness and won't be returned through the API again.",
+  "cache_message_zh": "本次响应已缓存，可通过下方 URL 直接查看，有效期 24 小时，访问缓存链接无额外费用。缓存仅用于请求溯源，不影响接口数据的时效性，也不会再次通过接口返回。",
+  "cache_url": "https://cache.tikhub.io/api/v1/cache/public/65bec0d4-a9b2-422c-b027-873bcb69eec4?sign=0d6bbc78ece74bfd4b16e52ecabd752a7d52a855447b91d2d6bc3cc0164f4791",
+  "router": "/api/v1/weibo/web_v2/fetch_pic_search",
+  "params": {
+    "query": "中国男篮落后",
+    "page": "1"
+  },
+  "data": {
+    "pic_list": [
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344593290987767",
+        "url": "//wx4.sinaimg.cn/thumb180/92aeec11gy1ih8314oy6rj20u00k0gnl.jpg",
+        "original_pic": "//wx4.sinaimg.cn/large/92aeec11gy1ih8314oy6rj20u00k0gnl.jpg",
+        "text": "【#中国队78比97不敌日本队#】#中国男篮vs日本男篮##中国男篮惨败日本男篮# 中国男篮今天傍晚迎来与日本队的亚运会半决赛。首发为廖三宁、庞峥麟、王俊杰、胡金秋、崔永熙。这组半决赛胜者将在决赛对阵韩国男篮，负方将对阵伊朗男篮。中国首节15-28落后13分。李弘权5分6篮板，胡金秋4分，廖三宁2分2篮 ​",
+        "created_at": "Fri Sep 18 20:16:41 +0800 2026",
+        "sub_text": "【#中国队78比97不敌日本队#】#中国男篮vs...",
+        "sub_name": "热度新闻",
+        "user": {
+          "profile_image_url": "//tvax4.sinaimg.cn/crop.0.0.1080.1080.50/92aeec11ly8hlwg775m3ej20u00u0wgf.jpg?KID=imgbed,tva&Expires=1789744609&ssig=kZX8eaE6Zv",
+          "profile_url": "//weibo.com/u/2460937233",
+          "name": "热度新闻"
+        }
+      },
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344593214179960",
+        "url": "//wx4.sinaimg.cn/thumb180/00744UGGly1ih835u001uj34012o1npg.jpg",
+        "original_pic": "//wx4.sinaimg.cn/large/00744UGGly1ih835u001uj34012o1npg.jpg",
+        "text": "78-97输给日本，中国男篮到底输在哪？\n\n中国男篮输给日本19分，无缘亚运会决赛。\n\n而且这场球，真的不是一句“状态不好”就能解释的。\n\n因为赛前我们都知道，中国队最大的优势是什么？\n\n内线。\n\n胡金秋、余嘉豪、焦泊乔，这套内线配置，赛前甚至被认为是中国队对日本最大的优势。\n\n可真正打起来之后呢 ​",
+        "created_at": "Fri Sep 18 20:16:23 +0800 2026",
+        "sub_text": "78-97输给日本，中国男篮到底输在哪？\n\n中国...",
+        "sub_name": "车轮上的小梦",
+        "user": {
+          "profile_image_url": "//tvax3.sinaimg.cn/crop.0.0.1080.1080.50/00744UGGly8i3zq5uj2i5j30u00u075d.jpg?KID=imgbed,tva&Expires=1789744609&ssig=72QAR3ic%2BF",
+          "profile_url": "//weibo.com/xihuan1",
+          "name": "车轮上的小梦"
+        }
+      },
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344592964880692",
+        "url": "//wx2.sinaimg.cn/thumb180/002diGk7ly8ih82whdy2nj60xl0orwji02.jpg",
+        "original_pic": "//wx2.sinaimg.cn/large/002diGk7ly8ih82whdy2nj60xl0orwji02.jpg",
+        "text": "#中国男篮创队史亚运最大分差失利#【中国男篮负日本男篮19分无缘决赛 队史亚运最大分差失利】#中国男篮惨败日本男篮#\n直播吧9月18日讯 亚运会男篮半决赛，中国男篮对阵东道主日本男篮。赵嘉义和李弘权迎来复出。\n比赛开始，日本队内外开花打出10-4的开局，李弘权连投带罚拿分带队追赶，但此后中国男篮 ​",
+        "created_at": "Fri Sep 18 20:15:23 +0800 2026",
+        "sub_text": "#中国男篮创队史亚运最大分差失利#【中国男篮负日...",
+        "sub_name": "新浪AI",
+        "user": {
+          "profile_image_url": "//tvax4.sinaimg.cn/crop.0.0.1080.1080.50/008sFF1uly8hqs4ojxjo1j30u00u1dic.jpg?KID=imgbed,tva&Expires=1789744609&ssig=nFwqRrWVGz",
+          "profile_url": "//weibo.com/u/7752729208",
+          "name": "新浪AI"
+        }
+      },
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344592913238297",
+        "url": "//wx1.sinaimg.cn/thumb180/002diGk7ly8ih830i4njbj618g0tntjs02.jpg",
+        "original_pic": "//wx1.sinaimg.cn/large/002diGk7ly8ih830i4njbj618g0tntjs02.jpg",
+        "text": "【#中国男篮止步亚运会半决赛#】#中国男篮vs日本男篮# 直播吧9月18日讯 亚运会男篮半决赛，中国男篮对阵东道主日本男篮。赵嘉义和李弘权迎来复出。\n\n比赛开始，日本队内外开花打出10-4的开局，李弘权连投带罚拿分带队追赶，但此后中国男篮攻防两端被压制，日本队3记三分带出14-2的攻击波确立两位数优势 ​",
+        "created_at": "Fri Sep 18 20:15:11 +0800 2026",
+        "sub_text": "【#中国男篮止步亚运会半决赛#】#中国男篮vs日...",
+        "sub_name": "新浪潮流官",
+        "user": {
+          "profile_image_url": "//tvax1.sinaimg.cn/crop.0.0.1080.1080.50/0089kmiily8h8vgshtwi7j30u00u0q5j.jpg?KID=imgbed,tva&Expires=1789744609&ssig=4uT498hfzk",
+          "profile_url": "//weibo.com/BiexiaoMingchangmian",
+          "name": "新浪潮流官"
+        }
+      },
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344592857928278",
+        "url": "//wx4.sinaimg.cn/thumb180/006gOudUgy1ih83469gl0j310o22vafu.jpg",
+        "original_pic": "//wx4.sinaimg.cn/large/006gOudUgy1ih83469gl0j310o22vafu.jpg",
+        "text": "看完这场比赛心里五味杂陈。78‑97不敌日本，半决赛遗憾止步。\n整场比赛攻防都被对手压制，大比分落后，看得很无力。\n输赢归根到底是竞技结果，不刻意捆绑特殊日期制造对立，只是这份沉甸甸的期待，真的很难释怀\n9月20日还有和伊朗的铜牌战，希望男篮放下包袱，调整好状态打出该有的精气神。\n\n中国男篮 ​",
+        "created_at": "Fri Sep 18 20:14:58 +0800 2026",
+        "sub_text": "看完这场比赛心里五味杂陈。78‑97不敌日本，半...",
+        "sub_name": "追风小豌豆",
+        "user": {
+          "profile_image_url": "//tvax1.sinaimg.cn/crop.0.0.1080.1080.50/006gOudUly8ienjqs0yk4j30u00u0q55.jpg?KID=imgbed,tva&Expires=1789744609&ssig=tUKv9SMkGL",
+          "profile_url": "//weibo.com/u/5745250950",
+          "name": "追风小豌豆"
+        }
+      },
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344592819915953",
+        "url": "//wx4.sinaimg.cn/thumb180/001PQmVogy1ih8328ag8gj60hs0ps40o02.jpg",
+        "original_pic": "//wx4.sinaimg.cn/large/001PQmVogy1ih8328ag8gj60hs0ps40o02.jpg",
+        "text": "【中国男篮无缘决赛】#中国男篮vs日本男篮#\n9月18日晚，中国男篮以78比97不敌日本队，无缘2026年名古屋#亚运会男篮#决赛。9月20日18:40，日本队和韩国队将进行冠亚军争夺战。\n\n比赛开始后，日本队率先投中三分球，开局打了中国队一个8:2。此后中国队曾将比分追至11:13，但日本队随后连续投中3个三分球 ​",
+        "created_at": "Fri Sep 18 20:14:49 +0800 2026",
+        "sub_text": "【中国男篮无缘决赛】#中国男篮vs日本男篮#\n9...",
+        "sub_name": "南方日报",
+        "user": {
+          "profile_image_url": "//tvax2.sinaimg.cn/crop.0.0.640.640.50/001PQmVoly8h8vgdozraej60hs0hs74y02.jpg?KID=imgbed,tva&Expires=1789744609&ssig=ullxgwEBX6",
+          "profile_url": "//weibo.com/nfrb",
+          "name": "南方日报"
+        }
+      },
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344592517926230",
+        "url": "//wx2.sinaimg.cn/thumb180/3bbf916fly1ih8331tg78j20b907i413.jpg",
+        "original_pic": "//wx2.sinaimg.cn/large/3bbf916fly1ih8331tg78j20b907i413.jpg",
+        "text": "【#中国男篮止步亚运会半决赛#】#中国男篮vs日本男篮# 直播吧9月18日讯 亚运会男篮半决赛，中国男篮对阵东道主日本男篮。赵嘉义和李弘权迎来复出。\n\n比赛开始，日本队内外开花打出10-4的开局，李弘权连投带罚拿分带队追赶，但此后中国男篮攻防两端被压制，日本队3记三分带出14-2的攻击波确立两位数优势 ​",
+        "created_at": "Fri Sep 18 20:13:37 +0800 2026",
+        "sub_text": "【#中国男篮止步亚运会半决赛#】#中国男篮vs日...",
+        "sub_name": "观澜新闻",
+        "user": {
+          "profile_image_url": "//tvax4.sinaimg.cn/crop.0.0.1080.1080.50/3bbf916fly8hfd1tx0ceqj20u00u0jsn.jpg?KID=imgbed,tva&Expires=1789744609&ssig=P1Q25pbDjU",
+          "profile_url": "//weibo.com/lzrbs",
+          "name": "观澜新闻"
+        }
+      },
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344592447671521",
+        "url": "//wx3.sinaimg.cn/thumb180/002diGk7ly8ih82n44nl7j60j60aqace02.jpg",
+        "original_pic": "//wx3.sinaimg.cn/large/002diGk7ly8ih82n44nl7j60j60aqace02.jpg",
+        "text": "#中国男篮最多时落后35分#【三节战报：最多时落后35分，中国男篮52-83落后日本】#中国男篮vs日本男篮# 北京时间9月18日，2026亚洲杯男篮半决赛中国男篮对阵日本男篮的比赛正在进行中。#中国男篮落后#\n比赛第三节，中国男篮仍然没有起色，金近廉里突外投将分差扩大至25分，中国进攻端则靠崔永熙苦苦支撑 ​",
+        "created_at": "Fri Sep 18 20:13:20 +0800 2026",
+        "sub_text": "#中国男篮最多时落后35分#【三节战报：最多时落...",
+        "sub_name": "新浪非遗",
+        "user": {
+          "profile_image_url": "//tvax3.sinaimg.cn/crop.15.0.219.219.50/007l4sOYly8fyhlboxhd0j308e06nmx6.jpg?KID=imgbed,tva&Expires=1789744609&ssig=dJccFHT%2Frf",
+          "profile_url": "//weibo.com/u/6724296984",
+          "name": "新浪非遗"
+        }
+      },
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344592411232709",
+        "url": "//wx1.sinaimg.cn/thumb180/002diGk7ly8ih830i4njbj618g0tntjs02.jpg",
+        "original_pic": "//wx1.sinaimg.cn/large/002diGk7ly8ih830i4njbj618g0tntjs02.jpg",
+        "text": "【#中国男篮止步亚运会半决赛#】#中国男篮vs日本男篮# 直播吧9月18日讯 亚运会男篮半决赛，中国男篮对阵东道主日本男篮。赵嘉义和李弘权迎来复出。\n\n比赛开始，日本队内外开花打出10-4的开局，李弘权连投带罚拿分带队追赶，但此后中国男篮攻防两端被压制，日本队3记三分带出14-2的攻击波确立两位数优势 ​",
+        "created_at": "Fri Sep 18 20:13:11 +0800 2026",
+        "sub_text": "【#中国男篮止步亚运会半决赛#】#中国男篮vs日...",
+        "sub_name": "热浪直播间",
+        "user": {
+          "profile_image_url": "//tvax2.sinaimg.cn/crop.0.0.362.362.50/69da054dly1gqeijiywcdj20a20a2acq.jpg?KID=imgbed,tva&Expires=1789744609&ssig=Qrag22VrJf",
+          "profile_url": "//weibo.com/xinlangpinglun",
+          "name": "热浪直播间"
+        }
+      },
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344592406774060",
+        "url": "//wx3.sinaimg.cn/thumb180/5cd6edf5gy1ih83293rk9j20yo0n4n4m.jpg",
+        "original_pic": "//wx3.sinaimg.cn/large/5cd6edf5gy1ih83293rk9j20yo0n4n4m.jpg",
+        "text": "#亚运会男篮#半决赛 #中国男篮vs日本男篮# 特别时刻遭遇挫折！连两届无缘亚运决赛！中国男篮19分惨负日本，下半场中国男篮继续低迷最多落后35分差距，最终中国男篮78-97惨负日本男篮。最尴尬的是胡明轩了，明天还要当中国亚运代表队的旗手呢。 ​",
+        "created_at": "Fri Sep 18 20:13:09 +0800 2026",
+        "sub_text": "#亚运会男篮#半决赛 #中国男篮vs日本男篮# ...",
+        "sub_name": "胡祖信",
+        "user": {
+          "profile_image_url": "//tvax4.sinaimg.cn/crop.0.0.512.512.50/5cd6edf5ly8gw13u210vij20e80e8gma.jpg?KID=imgbed,tva&Expires=1789744609&ssig=GHNTS%2BMobQ",
+          "profile_url": "//weibo.com/3000sam",
+          "name": "胡祖信"
+        }
+      },
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344592209644029",
+        "url": "//wx2.sinaimg.cn/thumb180/002diGk7ly8ih82whdy2nj60xl0orwji02.jpg",
+        "original_pic": "//wx2.sinaimg.cn/large/002diGk7ly8ih82whdy2nj60xl0orwji02.jpg",
+        "text": "#中国男篮创队史亚运最大分差失利#【中国男篮负日本男篮19分无缘决赛 队史亚运最大分差失利】#中国男篮惨败日本男篮#\n直播吧9月18日讯 亚运会男篮半决赛，中国男篮对阵东道主日本男篮。赵嘉义和李弘权迎来复出。\n比赛开始，日本队内外开花打出10-4的开局，李弘权连投带罚拿分带队追赶，但此后中国男篮 ​",
+        "created_at": "Fri Sep 18 20:12:23 +0800 2026",
+        "sub_text": "#中国男篮创队史亚运最大分差失利#【中国男篮负日...",
+        "sub_name": "新浪医典",
+        "user": {
+          "profile_image_url": "//tvax4.sinaimg.cn/crop.0.0.600.600.50/007KaEbYly8hfwkawq212j30go0gowfd.jpg?KID=imgbed,tva&Expires=1789744609&ssig=sSX68nqSEg",
+          "profile_url": "//weibo.com/u/7095179062",
+          "name": "新浪医典"
+        }
+      },
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344592197323298",
+        "url": "//wx3.sinaimg.cn/thumb180/002diGk7ly8ih82n44nl7j60j60aqace02.jpg",
+        "original_pic": "//wx3.sinaimg.cn/large/002diGk7ly8ih82n44nl7j60j60aqace02.jpg",
+        "text": "#中国男篮最多时落后35分#【三节战报：最多时落后35分，中国男篮52-83落后日本】#中国男篮vs日本男篮# 北京时间9月18日，2026亚洲杯男篮半决赛中国男篮对阵日本男篮的比赛正在进行中。#中国男篮落后#\n比赛第三节，中国男篮仍然没有起色，金近廉里突外投将分差扩大至25分，中国进攻端则靠崔永熙苦苦支撑 ​",
+        "created_at": "Fri Sep 18 20:12:20 +0800 2026",
+        "sub_text": "#中国男篮最多时落后35分#【三节战报：最多时落...",
+        "sub_name": "新浪运动",
+        "user": {
+          "profile_image_url": "//tvax2.sinaimg.cn/crop.0.0.600.600.50/008tuKWbly8hg1y91xeetj30go0go0ti.jpg?KID=imgbed,tva&Expires=1789744609&ssig=FY5o8otWGP",
+          "profile_url": "//weibo.com/u/7764906671",
+          "name": "新浪运动"
+        }
+      },
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344592141484717",
+        "url": "//wx2.sinaimg.cn/thumb180/001DjCJOgy1ih831gxvr0j61hc0zkdky02.jpg",
+        "original_pic": "//wx2.sinaimg.cn/large/001DjCJOgy1ih831gxvr0j61hc0zkdky02.jpg",
+        "text": "#中国男篮vs日本男篮#【中国男篮不敌日本男篮，无缘名古屋亚运会男篮项目决赛】#亚运会男篮#18日，2026爱知·名古屋亚运会男篮项目半决赛在爱知国际竞技场上演，中国男篮对阵主场作战的日本男篮。最终，中国男篮全场不在状态，以78比97不敌日本男篮，无缘决赛。在此前另一场半决赛中，韩国男篮击败伊朗 ​",
+        "created_at": "Fri Sep 18 20:12:06 +0800 2026",
+        "sub_text": "#中国男篮vs日本男篮#【中国男篮不敌日本男篮，...",
+        "sub_name": "羊城晚报",
+        "user": {
+          "profile_image_url": "//tvax1.sinaimg.cn/crop.0.0.753.753.50/001DjCJOly8h8vghz8v0gj60kx0kxmxm02.jpg?KID=imgbed,tva&Expires=1789744609&ssig=l2AUrFfIQh",
+          "profile_url": "//weibo.com/ycwb2010",
+          "name": "羊城晚报"
+        }
+      },
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344592138601455",
+        "url": "//wx1.sinaimg.cn/thumb180/007uL7xSly8ih831gkdj5j30yi0k0gqb.jpg",
+        "original_pic": "//wx1.sinaimg.cn/large/007uL7xSly8ih831gkdj5j30yi0k0gqb.jpg",
+        "text": "#日本男篮12人里有5个归化混血# #中国男篮半年内两次输给日本# \n7月3日世预赛主场惨败：中国男篮在沈阳主场以73-92不敌日本，分差达19分，这是中国男篮自1936年以来首次在FIBA正赛主场输给日本，88年不败纪录就此终结。\n9月18日亚运会半决赛再负：中国男篮在半场即落后19分，最终告负，对手还是缺少八 ​",
+        "created_at": "Fri Sep 18 20:12:06 +0800 2026",
+        "sub_text": "#日本男篮12人里有5个归化混血# #中国男篮半...",
+        "sub_name": "国民体育精选",
+        "user": {
+          "profile_image_url": "//tvax4.sinaimg.cn/crop.5.0.662.662.50/007uL7xSly8g4dcnu84taj30rs0iewhq.jpg?KID=imgbed,tva&Expires=1789744609&ssig=TzvZl2HjYM",
+          "profile_url": "//weibo.com/u/6867450328",
+          "name": "国民体育精选"
+        }
+      },
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344592112648729",
+        "url": "//wx1.sinaimg.cn/thumb180/006aa0A5ly8ih831cvt6pj30yi0k00xb.jpg",
+        "original_pic": "//wx1.sinaimg.cn/large/006aa0A5ly8ih831cvt6pj30yi0k00xb.jpg",
+        "text": "#日本男篮12人里有5个归化混血# #中国男篮半年内两次输给日本# \n7月3日世预赛主场惨败：中国男篮在沈阳主场以73-92不敌日本，分差达19分，这是中国男篮自1936年以来首次在FIBA正赛主场输给日本，88年不败纪录就此终结。\n9月18日亚运会半决赛再负：中国男篮在半场即落后19分，最终告负，对手还是缺少八 ​",
+        "created_at": "Fri Sep 18 20:11:59 +0800 2026",
+        "sub_text": "#日本男篮12人里有5个归化混血# #中国男篮半...",
+        "sub_name": "小鬼说球",
+        "user": {
+          "profile_image_url": "//tvax2.sinaimg.cn/crop.0.0.381.381.50/006aa0A5ly8g4dpp900uwj30al0degm5.jpg?KID=imgbed,tva&Expires=1789744609&ssig=oSfTKMMgvf",
+          "profile_url": "//weibo.com/345014285",
+          "name": "小鬼说球"
+        }
+      },
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344592100856076",
+        "url": "//wx2.sinaimg.cn/thumb180/006m0kYlly8ih831b6vsxj30yi0k00xe.jpg",
+        "original_pic": "//wx2.sinaimg.cn/large/006m0kYlly8ih831b6vsxj30yi0k00xe.jpg",
+        "text": "#日本男篮12人里有5个归化混血# #中国男篮半年内两次输给日本# \n7月3日世预赛主场惨败：中国男篮在沈阳主场以73-92不敌日本，分差达19分，这是中国男篮自1936年以来首次在FIBA正赛主场输给日本，88年不败纪录就此终结。\n9月18日亚运会半决赛再负：中国男篮在半场即落后19分，最终告负，对手还是缺少八 ​",
+        "created_at": "Fri Sep 18 20:11:57 +0800 2026",
+        "sub_text": "#日本男篮12人里有5个归化混血# #中国男篮半...",
+        "sub_name": "虾说体育",
+        "user": {
+          "profile_image_url": "//tvax1.sinaimg.cn/crop.0.0.1002.1002.50/006m0kYlly8gwj84gtr6cj30ru0rujt8.jpg?KID=imgbed,tva&Expires=1789744609&ssig=t4N3cVHqqe",
+          "profile_url": "//weibo.com/u/5821957005",
+          "name": "虾说体育"
+        }
+      },
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344591916305466",
+        "url": "//wx1.sinaimg.cn/thumb180/002diGk7ly8ih830i4njbj618g0tntjs02.jpg",
+        "original_pic": "//wx1.sinaimg.cn/large/002diGk7ly8ih830i4njbj618g0tntjs02.jpg",
+        "text": "【#中国男篮止步亚运会半决赛#】#中国男篮vs日本男篮# 直播吧9月18日讯 亚运会男篮半决赛，中国男篮对阵东道主日本男篮。赵嘉义和李弘权迎来复出。\n\n比赛开始，日本队内外开花打出10-4的开局，李弘权连投带罚拿分带队追赶，但此后中国男篮攻防两端被压制，日本队3记三分带出14-2的攻击波确立两位数优势 ​",
+        "created_at": "Fri Sep 18 20:11:13 +0800 2026",
+        "sub_text": "【#中国男篮止步亚运会半决赛#】#中国男篮vs日...",
+        "sub_name": "新浪视频",
+        "user": {
+          "profile_image_url": "//tvax1.sinaimg.cn/crop.0.0.180.180.50/001N1NmMly8h8vgmnzmhbj6050050jrb02.jpg?KID=imgbed,tva&Expires=1789744609&ssig=QFuhHpB7eb",
+          "profile_url": "//weibo.com/video",
+          "name": "新浪视频"
+        }
+      },
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344591886945368",
+        "url": "//wx4.sinaimg.cn/thumb180/9fa42a29ly8ih830bgid9j20sg0sg483.jpg",
+        "original_pic": "//wx4.sinaimg.cn/large/9fa42a29ly8ih830bgid9j20sg0sg483.jpg",
+        "text": "半场落后19分，这球看得人心里堵得慌。\n\n本来想着九一八这个日子，怎么也得争口气，结果开局就被打了个15:28。日本队虽然没派主力，但那归化中锋科克在内线翻江倒海，外线三分还准得离谱。咱们这边呢，锋线伤病满营，动作看着都僵硬，篮板球被抢爆了，前场板3比9，这怎么打？\n\n之前世预赛刚在沈阳输过1 ​",
+        "created_at": "Fri Sep 18 20:11:06 +0800 2026",
+        "sub_text": "半场落后19分，这球看得人心里堵得慌。\n\n本来想...",
+        "sub_name": "换个昵称继续生活",
+        "user": {
+          "profile_image_url": "//tvax2.sinaimg.cn/crop.0.0.1080.1080.50/9fa42a29ly8h9wthu7f2hj20u00u076r.jpg?KID=imgbed,tva&Expires=1789744609&ssig=YJ92JXI%2BxU",
+          "profile_url": "//weibo.com/778930421",
+          "name": "换个昵称继续生活"
+        }
+      },
+      {
+        "is_forward": false,
+        "forward_id": 0,
+        "mid": "5344591706590090",
+        "url": "//wx2.sinaimg.cn/thumb180/002diGk7ly8ih82whdy2nj60xl0orwji02.jpg",
+        "original_pic": "//wx2.sinaimg.cn/large/002diGk7ly8ih82whdy2nj60xl0orwji02.jpg",
+        "text": "#中国男篮创队史亚运最大分差失利#【中国男篮负日本男篮19分无缘决赛 队史亚运最大分差失利】#中国男篮惨败日本男篮#\n直播吧9月18日讯 亚运会男篮半决赛，中国男篮对阵东道主日本男篮。赵嘉义和李弘权迎来复出。\n比赛开始，日本队内外开花打出10-4的开局，李弘权连投带罚拿分带队追赶，但此后中国男篮 ​",
+        "created_at": "Fri Sep 18 20:10:23 +0800 2026",
+        "sub_text": "#中国男篮创队史亚运最大分差失利#【中国男篮负日...",
+        "sub_name": "新浪健康派",
+        "user": {
+          "profile_image_url": "//tvax3.sinaimg.cn/crop.0.0.1000.1000.50/007l0UO4ly8h8vg7sxvggj30rs0rs757.jpg?KID=imgbed,tva&Expires=1789744609&ssig=64bC2rAdPH",
+          "profile_url": "//weibo.com/u/6723451248",
+          "name": "新浪健康派"
+        }
+      }
+    ],
+    "is_end": 0,
+    "suda_pre": "seqid:17897338090820285561|type:0|t:0|pos:1-0|q:%E4%B8%AD%E5%9B%BD%E7%94%B7%E7%AF%AE%E8%90%BD%E5%90%8E|ext:",
+    "total_number": 0,
+    "noResultMsg": "抱歉，未找到相关结果。",
+    "claim_auth_white": true,
+    "claim_auth": [],
+    "risk_control": {
+      "overall": 0,
+      "navControl": [],
+      "cateList": [],
+      "aitabHidden": 0
+    }
+  }
+}

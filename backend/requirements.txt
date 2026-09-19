@@ -1,0 +1,30 @@
+# SocialHot AI — backend dependencies
+# Versions are the ones the verification runs actually used.
+
+# Phase 1: collection and the API
+fastapi==0.141.1
+uvicorn[standard]==0.53.0
+httpx==0.28.1
+# For QQ rich media: the material library is mostly webp and QQ images only accept
+# png/jpg, so pushing the original post's pictures requires converting them.
+Pillow==12.3.0
+pydantic==2.13.5
+pydantic-settings==2.15.0
+
+# Phase 2: persistence and migrations
+SQLAlchemy==2.0.54
+asyncpg==0.31.0
+alembic==1.20.0
+
+# Phase 5: scheduling
+APScheduler==3.11.3
+
+# Phase 8: MCP server (exposes the pipeline to AI clients at /mcp/)
+# 2.x renamed FastMCP to MCPServer (mcp.server.mcpserver); v1 examples do not apply.
+mcp==2.2.0
+
+# Test-only
+pytest==9.1.1
+pytest-asyncio==1.4.0
+respx==0.23.1
+aiosqlite==0.22.1
