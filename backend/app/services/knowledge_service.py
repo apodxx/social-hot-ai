@@ -474,51 +474,86 @@ async def generate_article(
     platforms: dict[str, Any] = {}
     if with_platforms:
         await _emit(on_progress, "platforms", "started")
+        platform_prompt = build_platform_prompt(draft, topic)
+        platforms: dict[str, Any] = {}
         try:
-            platform_payload, platform_completion = await client.complete_json(
+            payload_p, completion_p = await client.complete_json(
                 system=PLATFORM_SYSTEM_PROMPT,
-                user=build_platform_prompt(draft, topic),
+                user=platform_prompt,
                 temperature=0.7,
                 # 三平台文案比文章短，但抖音脚本 + 微博 + 小红书三份加起来也不小。
                 max_tokens=resolved.article_max_tokens,
             )
-            platforms = parse_platforms(platform_payload)
-            result.steps["platforms"] = {
-                "ok": bool(platforms),
-                "tokens": _accumulate(platform_completion.usage),
-                "got": sorted(platforms),
-            }
-            await _emit(on_progress, "platforms", "done", platforms=sorted(platforms))
-        except DeepSeekJSONError as exc:
-            result.steps["platforms"] = {
-                "ok": False,
-                "error": f"三平台文案输出不完整（可能被截断）：{exc}",
-            }
-            await _emit(on_progress, "platforms", "failed", error="输出不完整（可能被截断）")
-            logger.warning("platform rendering produced incomplete JSON for %r", topic)
+            platforms = parse_platforms(payload_p)
+        except DeepSeekTruncatedError:
+            # 被截断时明确要求更短的版本——重试同样的请求只会再被截断一次。
+            try:
+                payload_p, completion_p = await client.complete_json(
+                    system=PLATFORM_SYSTEM_PROMPT,
+                    user=platform_prompt + "\n\n**务必简短**：三份文案都控制在 150 字以内。",
+                    temperature=0.7,
+                    max_tokens=resolved.article_max_tokens,
+                )
+                platforms = parse_platforms(payload_p)
+            except (DeepSeekJSONError, DeepSeekTruncatedError) as exc:
+                result.steps["platforms"] = {"ok": False, "error": f"两次都被截断：{exc}"}
+                await _emit(on_progress, "platforms", "failed", error="两次都被截断")
+                logger.warning("platform rendering truncated twice for %r", topic)
+        except DeepSeekJSONError as first:
+            # **和文章那一步同样的处理**：模型是随机采样的，JSON 不合法时重试一次往往就好。
+            # 第一版只对文章重试、忘了这步，于是出现了"文章成功但三平台为空"——
+            # 回复里只剩一句「没有小红书版本」，用户什么也拿不到（实测踩到过）。
+            logger.warning("platform JSON invalid for %r — retrying once: %s", topic, first)
+            await _emit(
+                on_progress, "platforms", "started", note="上次输出不是合法 JSON，正在重试"
+            )
+            try:
+                payload_p, completion_p = await client.complete_json(
+                    system=PLATFORM_SYSTEM_PROMPT,
+                    user=platform_prompt
+                    + "\n\n**上一版 JSON 不合法**：字符串内不要出现真实换行，"
+                    "不要出现未转义的双引号。",
+                    temperature=0.7,
+                    max_tokens=resolved.article_max_tokens,
+                )
+                platforms = parse_platforms(payload_p)
+            except (DeepSeekJSONError, DeepSeekTruncatedError) as exc:
+                result.steps["platforms"] = {"ok": False, "error": f"两次都不合法：{exc}"}
+                await _emit(on_progress, "platforms", "failed", error="两次 JSON 都不合法")
+                logger.warning("platform rendering failed twice for %r", topic)
         except Exception as exc:  # noqa: BLE001
             result.steps["platforms"] = {"ok": False, "error": f"{type(exc).__name__}: {exc}"}
             await _emit(on_progress, "platforms", "failed", error=f"{type(exc).__name__}: {exc}")
             logger.warning("platform rendering failed for %r: %s", topic, exc)
+        else:
+            result.steps["platforms"] = {
+                "ok": bool(platforms),
+                "tokens": _accumulate(completion_p.usage),
+                "got": sorted(platforms),
+            }
+            await _emit(on_progress, "platforms", "done", platforms=sorted(platforms))
 
     images: list[dict[str, Any]] = []
     if with_images:
-        await _emit(on_progress, "images", "started", keyword=(search_keyword or topic))
+        # 配图用自适应检索：先「<主题> 图解」，不够再「原理」，最多两次调用。
+        # 裸主题词实测会捞回同名不同域的内容（搜「红黑树」得到「红黑美学」壁纸），
+        # 而固定用 3 个词又会让每次都多花调用——所以只在不够时才继续试。
+        core = (search_keyword or topic).strip()
+        await _emit(on_progress, "images", "started", keyword=f"{core} 图解")
         try:
-            from app.services.tikhub.image_search import search_and_download
+            from app.services.tikhub.image_search import search_topic_images
 
-            keyword = (search_keyword or topic).strip()
-            found, summary = await search_and_download(
-                keyword, limit=image_count, settings=resolved
+            found, summary = await search_topic_images(
+                core, want=image_count, settings=resolved
             )
-            images = [image.as_dict() for image in found if image.local_path]
-            result.steps["images"] = {"ok": bool(images), "keyword": keyword, **summary}
+            images = [image.as_dict() for image in found if image.local_path][:image_count]
+            result.steps["images"] = {"ok": bool(images), "keyword": core, **summary}
             await _emit(
                 on_progress,
                 "images",
                 "done" if images else "failed",
                 downloaded=len(images),
-                error="" if images else summary.get("errors", ["没有搜到可用图片"])[:1],
+                error="" if images else "没有找到与主题相关的图",
             )
         except Exception as exc:  # noqa: BLE001
             result.steps["images"] = {"ok": False, "error": f"{type(exc).__name__}: {exc}"}

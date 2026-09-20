@@ -127,6 +127,26 @@ EDITABLE: tuple[SettingSpec, ...] = (
     ),
     SettingSpec("DASHSCOPE_BASE_URL", "image", "DashScope 工作空间 Endpoint", "string"),
     SettingSpec("QWEN_IMAGE_MODEL", "image", "图像模型", "string", help="如 qwen-image-3.0-pro"),
+    SettingSpec(
+        "OCR_BASE_URL",
+        "image",
+        "OCR 专用 Endpoint",
+        "string",
+        help="私有部署域名（ws-*.maas.aliyuncs.com），与上面的 DashScope 域名不同，必须单独填",
+    ),
+    SettingSpec("OCR_MODEL", "image", "OCR 模型", "string", help="如 qwen3.5-ocr / qwen-vl-ocr"),
+    SettingSpec(
+        "OCR_MAX_IMAGES",
+        "image",
+        "单次最多识别几张图",
+        "int",
+        help="每张约 1000 图片 token，多了既慢又贵",
+    ),
+    SettingSpec(
+        "OMNI_BASE_URL", "image", "全模态 Endpoint（视频理解）", "string",
+        help="标准 dashscope.aliyuncs.com 的 compatible-mode 地址",
+    ),
+    SettingSpec("OMNI_MODEL", "image", "全模态模型", "string", help="如 qwen3.8-omni-flash"),
     SettingSpec("IMAGE_GEN_ENABLED", "image", "启用图片二创", "bool"),
     SettingSpec(
         "IMAGE_GEN_SIZE",

@@ -183,6 +183,24 @@ class Settings(BaseSettings):
     dashscope_base_url: str = "https://dashscope.aliyuncs.com"
     qwen_image_model: str = "qwen-image-3.0-pro"
 
+    # ------------------------------------------------------------------ 视觉理解
+    #: OCR 用的是**私有部署端点**，和标准 dashscope.aliyuncs.com 不是同一个域名
+    #: （形如 ``https://ws-xxxx.cn-beijing.maas.aliyuncs.com``）。所以必须单独配，
+    #: 不能复用 dashscope_base_url。实测三个模型名 qwen3.5-ocr / qwen-vl-ocr /
+    #: qwen-vl-ocr-latest 在该端点都可用。
+    ocr_base_url: str = ""
+    ocr_model: str = "qwen3.5-ocr"
+    #: 全模态模型（可理解视频）。走标准域名。
+    omni_base_url: str = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    omni_model: str = "qwen3.8-omni-flash"
+    #: 单次 OCR 最多识别几张图——每张约 1000 图片 token，多了既慢又贵。
+    ocr_max_images: int = 4
+    #: 是否先把多张图拼成**一张网格图**再 OCR / 发送。
+    #: 好处：只占 1 条 QQ 消息（被动回复一次只有 3-4 条额度，7 张图发不完），
+    #: 且 OCR 一次就能看全，便于确认"到底读了几张"。
+    #: 代价：拼图按长边缩放，格子里的字会比原图小；**密集小字的图建议关掉**。
+    ocr_stitch_images: bool = True
+
     #: Image generation costs **per image, not per token** — measured from the published
     #: price list: 1K output $0.03438, 2K output $0.068761 (China Beijing). A single image
     #: is therefore ~15x a whole text rewrite, which is why nothing generates images

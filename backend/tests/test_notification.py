@@ -317,7 +317,12 @@ class _FakeChannel(LogChannel):
 
 @pytest.mark.asyncio
 async def test_manager_is_disabled_by_default(settings):
-    manager = NotificationManager(settings)
+    """**通知开关关着时**，send 必须如实报告"未启用"而不是假装发送成功。
+
+    这里显式关掉 ``notification_enabled``：开关是**部署选择**（本项目真的会把它打开去跑
+    早中晚推送），不该依赖开发者 ``.env`` 里凑巧是关的——那样一开推送测试就红了。
+    """
+    manager = NotificationManager(settings.model_copy(update={"notification_enabled": False}))
     outcome = await manager.send("t", "c")
     assert outcome.ok is False and outcome.enabled is False
     assert "NOTIFICATION_ENABLED" in (outcome.error or "")
@@ -402,3 +407,92 @@ async def test_notify_rewrites_with_explicit_entries():
     manager = NotificationManager(_settings(), channels=[LogChannel()])
     outcome = await manager.notify_rewrites([(_rewrite(), _item())])
     assert outcome.ok is True and outcome.rendered_chars > 0
+
+
+# ---------------------------------------------------------------- digest formats
+def _fake_entry(title: str, summary: str) -> tuple[Any, Any]:
+    """构造一对 (rewrite, item)，字段足够 formatter 使用。"""
+
+    class _Obj:
+        def __init__(self, **kwargs: Any) -> None:
+            self.__dict__.update(kwargs)
+
+    rewrite = _Obj(
+        summary=summary,
+        why_hot="",
+        angle="",
+        xiaohongshu_title=title,
+        xiaohongshu_content="小红书正文" * 20,
+        xiaohongshu_hashtags=["编程"],
+        weibo_content="微博正文" * 20,
+        weibo_opening="",
+        douyin_script="抖音脚本" * 20,
+        douyin_hook="",
+        douyin_cta="",
+        needs_verification=True,
+        verification_note="无法核实出处",
+        status="NEEDS_REVIEW",
+        risk_flags=["需核实"],
+    )
+    item = _Obj(platform="xiaohongshu", title=title, url="https://example.com/x", author="某人", description="", hot_value=0)
+    return rewrite, item
+
+
+def test_compact_digest_is_much_shorter_than_the_review_digest():
+    """**回归测试：定时推送一天三次，用审核摘要会把群刷屏。**
+
+    实测：6 条内容用 ``format_digest`` 是 9,373 字符（按 QQ 单条 800 计 = 12 条消息），
+    速览版只要 1,323 字符（2 条）。所以定时推送默认用速览版——
+    三平台全文与风险标记仍在后台，不需要塞进手机通知里。
+    """
+    from app.services.notification.manager import format_digest, format_digest_compact
+
+    entries = [_fake_entry(f"标题{i}", f"这是第{i}条的摘要") for i in range(6)]
+    full = format_digest(entries, max_items=6)
+    compact = format_digest_compact(entries, max_items=6)
+
+    assert len(compact) < len(full) / 3, (
+        f"速览版应当明显更短：{len(compact)} vs {len(full)}"
+    )
+    assert len(compact) < 800 * 3, f"速览版不该超过 3 条 QQ 消息（实际 {len(compact)} 字符）"
+
+
+def test_compact_digest_keeps_the_signals_that_matter():
+    """速览也要保留「需核实」——否则有人照着标题就去发了。"""
+    from app.services.notification.manager import format_digest_compact
+
+    digest = format_digest_compact([_fake_entry("某标题", "某摘要")], max_items=1)
+    assert "某标题" in digest, "要有标题"
+    assert "某摘要" in digest, "要有摘要"
+    assert "需核实" in digest, "要保留核实提醒"
+    assert "https://example.com/x" in digest, "要有原文链接"
+    assert "不会自动发布" in digest or "系统不会自动发布" in digest
+
+
+def test_compact_digest_handles_an_empty_round():
+    """没有内容时也要说清楚，而不是发一条空消息。"""
+    from app.services.notification.manager import format_digest_compact
+
+    digest = format_digest_compact([])
+    assert "没有" in digest and len(digest) < 100
+
+
+def test_compact_digest_truncates_long_summaries():
+    """摘要过长要截断并加省略号——速览的意义就是短。"""
+    from app.services.notification.manager import format_digest_compact
+
+    digest = format_digest_compact(
+        [_fake_entry("标题", "很长的摘要" * 50)], max_items=1, summary_chars=30
+    )
+    assert "…" in digest
+    assert "很长的摘要" * 50 not in digest
+
+
+def test_notify_defaults_to_the_compact_style():
+    """定时推送走 notify_rewrites 时不传 style，必须是速览版。"""
+    import inspect
+
+    from app.services.notification.manager import NotificationManager
+
+    signature = inspect.signature(NotificationManager.notify_rewrites)
+    assert signature.parameters["style"].default == "compact"

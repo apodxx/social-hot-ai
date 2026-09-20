@@ -129,6 +129,9 @@ class ChatResult:
     usage: ChatUsage = field(default_factory=ChatUsage)
     latency_ms: float = 0.0
     finish_reason: str = ""
+    #: Function calling 时模型要求调用的工具（``[{"name":..., "arguments": {...}}]``）。
+    #: 普通对话为空列表。放在这里而不是另开一个返回类型，是为了让调用方只处理一种结果。
+    tool_calls: list[dict[str, Any]] = field(default_factory=list)
 
 
 def extract_json(text: str) -> Any:
@@ -230,8 +233,21 @@ class DeepSeekClient:
         json_mode: bool = True,
         temperature: float | None = None,
         max_tokens: int | None = None,
+        tools: Sequence[dict[str, Any]] | None = None,
+        allow_reasoning_fallback: bool = False,
     ) -> ChatResult:
-        """One chat completion, with bounded retries."""
+        """One chat completion, with bounded retries.
+
+        ``tools`` 传入 function calling 的工具定义（OpenAI 格式）。
+        **传了 tools 就必须关掉 ``response_format=json_object``** —— 两者互斥，
+        同时带会被服务端拒绝。
+
+        ``allow_reasoning_fallback`` 默认 **False**。曾经默认开启，后果是
+        **把模型的内心独白当成答复发给了用户**：路由调用返回空 content 时，
+        兜底把 ``reasoning_content`` 填了进去，于是 QQ 群里出现了三大段
+        "Hmm, ambiguous… I'll go with…" 这样的英文思考过程。
+        **思考过程不是答复**，只在明确知道调用方需要"拿到点东西总比空着好"时才开。
+        """
         body: dict[str, Any] = {
             "model": self.model,
             "messages": list(messages),
@@ -241,7 +257,10 @@ class DeepSeekClient:
             "max_tokens": self._settings.deepseek_max_tokens if max_tokens is None else max_tokens,
             "stream": False,
         }
-        if json_mode:
+        if tools:
+            body["tools"] = list(tools)
+            body["tool_choice"] = "auto"
+        elif json_mode:
             body["response_format"] = {"type": "json_object"}
 
         attempts = self._settings.deepseek_max_retries + 1
@@ -257,7 +276,11 @@ class DeepSeekClient:
             else:
                 elapsed_ms = (time.perf_counter() - started) * 1000
                 if response.status_code < 400:
-                    result = self._parse_completion(response, elapsed_ms)
+                    result = self._parse_completion(
+                        response,
+                        elapsed_ms,
+                        allow_reasoning_fallback=allow_reasoning_fallback,
+                    )
                     self.call_count += 1
                     self.total_usage.add(result.usage)
                     logger.info(
@@ -331,7 +354,13 @@ class DeepSeekClient:
             raise
 
     # ----------------------------------------------------------------- private
-    def _parse_completion(self, response: httpx.Response, elapsed_ms: float) -> ChatResult:
+    def _parse_completion(
+        self,
+        response: httpx.Response,
+        elapsed_ms: float,
+        *,
+        allow_reasoning_fallback: bool = False,
+    ) -> ChatResult:
         try:
             payload = response.json()
         except ValueError as exc:
@@ -340,19 +369,74 @@ class DeepSeekClient:
         if not choices:
             raise DeepSeekResponseError("response contained no choices", body=payload)
         choice = choices[0]
-        content = (choice.get("message") or {}).get("content") or ""
+        message = choice.get("message") or {}
+        content = message.get("content") or ""
+        # **空 content 时回退到 reasoning_content。** ``deepseek-flash`` 是推理模型，
+        # 实测出现过 finish_reason='stop'、content 为空、而思考内容在
+        # ``reasoning_content`` 里的情况——那时调用方只会看到"模型没有输出内容"，
+        # 完全查不出原因（用户实际遇到的就是这个）。宁可把思考内容交出去并标注，
+        # 也不要返回空。
+        # **空 content 时是否回退到 reasoning_content —— 默认不回退。**
+        # 曾经默认回退，后果是把模型的内心独白当成答复发给了用户
+        # （QQ 群里出现了三段 "Hmm, ambiguous… I'll go with…" 的英文思考过程）。
+        # 思考过程不是答复；只有在调用方明确接受"拿到点东西总比空着好"时才开。
+        # ``finish_reason='tool_calls'`` 时 content 为空本就是正常的，任何情况都不回退。
+        finish_reason = choice.get("finish_reason") or ""
+        if (
+            allow_reasoning_fallback
+            and not content.strip()
+            and finish_reason != "tool_calls"
+        ):
+            reasoning = (message.get("reasoning_content") or "").strip()
+            if reasoning:
+                logger.warning(
+                    "deepseek returned empty content with finish_reason=%r; "
+                    "falling back to reasoning_content (%d chars)",
+                    finish_reason,
+                    len(reasoning),
+                )
+                content = reasoning
         usage_payload = payload.get("usage") or {}
         usage = ChatUsage(
             prompt_tokens=int(usage_payload.get("prompt_tokens") or 0),
             completion_tokens=int(usage_payload.get("completion_tokens") or 0),
             total_tokens=int(usage_payload.get("total_tokens") or 0),
         )
+        # function calling：把模型要求的工具调用解出来。arguments 是 JSON **字符串**，
+        # 解析失败时保留原文并置空参数字典——让调用方能报出"模型给了非法参数"，
+        # 而不是在这里抛异常把整轮对话打断。
+        tool_calls: list[dict[str, Any]] = []
+        for raw in message.get("tool_calls") or []:
+            if not isinstance(raw, dict):
+                continue
+            function = raw.get("function") or {}
+            raw_args = function.get("arguments")
+            arguments: dict[str, Any] = {}
+            parse_error = ""
+            if isinstance(raw_args, dict):
+                arguments = raw_args
+            elif isinstance(raw_args, str) and raw_args.strip():
+                try:
+                    parsed = json.loads(raw_args, strict=False)
+                    arguments = parsed if isinstance(parsed, dict) else {"value": parsed}
+                except ValueError as exc:
+                    parse_error = f"{exc}"
+            tool_calls.append(
+                {
+                    "id": raw.get("id") or "",
+                    "name": str(function.get("name") or ""),
+                    "arguments": arguments,
+                    "raw_arguments": raw_args if isinstance(raw_args, str) else "",
+                    "parse_error": parse_error,
+                }
+            )
         return ChatResult(
             content=content,
             model=payload.get("model") or self.model,
             usage=usage,
             latency_ms=round(elapsed_ms, 1),
             finish_reason=choice.get("finish_reason") or "",
+            tool_calls=tool_calls,
         )
 
     def _retry_delay(self, attempt: int, response: httpx.Response | None) -> float:

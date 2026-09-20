@@ -169,8 +169,14 @@ async def test_a_declared_unimplemented_stage_is_reported_as_skipped(sqlite_db, 
 
 @pytest.mark.asyncio
 async def test_the_real_notify_stage_runs_and_reports_being_disabled(sqlite_db, settings):
-    """Running `notify` for real, with notifications off: the stage succeeds and says why."""
-    result = await run_pipeline(stages="notify", settings=settings)
+    """Running `notify` for real, with notifications off: the stage succeeds and says why.
+
+    显式关掉开关：它是**部署选择**（本项目会打开它跑早中晚推送），
+    测试不该依赖开发者 ``.env`` 里凑巧是关的。
+    """
+    result = await run_pipeline(
+        stages="notify", settings=settings.model_copy(update={"notification_enabled": False})
+    )
     step = result.steps[0]
     assert step.status == "success"
     assert step.detail["enabled"] is False

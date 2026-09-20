@@ -159,6 +159,8 @@ class QQBotChannel(NotificationChannel):
         passive_id: str = "",
         start_seq: int = 0,
         media_cache: dict[str, tuple[str, float]] | None = None,
+        keyboard: dict[str, Any] | None = None,
+        images_only: bool = False,
     ) -> SendResult:
         """发送一条文本 + 若干张图片。
 
@@ -213,20 +215,27 @@ class QQBotChannel(NotificationChannel):
             # --- 文本 ---
             endpoint = self._endpoint()
             assert endpoint is not None  # target[0] == "group" already checked
-            text_result = await self._post_text(
-                client,
-                endpoint,
-                headers,
-                title,
-                content,
-                passive_id=passive_id,
-                start_seq=start_seq,
-            )
-            if not text_result.ok:
-                return text_result
+            if images_only:
+                # 只发图片（不带头文本）。**这是"文案走被动、图片走主动"的关键**：
+                # 被动回复有条数上限（实测约 3-4 条），图文一起发就只能发前几张；
+                # 拆开之后，文案用被动保证必达，图片用主动消息不受那个上限约束。
+                sequence = start_seq
+            else:
+                text_result = await self._post_text(
+                    client,
+                    endpoint,
+                    headers,
+                    title,
+                    content,
+                    passive_id=passive_id,
+                    start_seq=start_seq,
+                    keyboard=keyboard,
+                )
+                if not text_result.ok:
+                    return text_result
 
-            # --- 图片：一张一条消息，序号接着文本往下数 ---
-            sequence = start_seq + text_result.parts
+                # --- 图片：一张一条消息，序号接着文本往下数 ---
+                sequence = start_seq + text_result.parts
             for relative in image_paths:
                 sequence += 1
                 path = Path(relative)
@@ -317,12 +326,18 @@ class QQBotChannel(NotificationChannel):
         *,
         passive_id: str = "",
         start_seq: int = 0,
+        keyboard: dict[str, Any] | None = None,
     ) -> SendResult:
         """发文本，必要时分条。抽出来是为了让 send() 与 send_rich() 共用一套错误处理。
 
         ``passive_id``（群消息的 ``msg_id``）一带上，这次发送就走**被动回复**额度，
         不再受"主动消息无权限"限制；代价是 5 分钟内最多 5 条。
         ``start_seq`` 让调用方把序号接着上一部分继续，避免"消息被去重"。
+
+        ``keyboard`` 是**内嵌按钮**（指令面板）。**实测它可以挂在普通文本消息上**
+        （``msg_type=0`` + ``keyboard`` → 200），不必用 Markdown、也就不需要额外的
+        模板权限（否则会撞 304036/304127）。按钮只在第一段文本上挂——
+        多条文本各带一套按钮会显得重复。
         """
         parts = split_message(f"{title}\n\n{content}", QQ_MAX_CHARS)
         if not parts:
@@ -334,6 +349,8 @@ class QQBotChannel(NotificationChannel):
                 "msg_type": 0,
                 "msg_seq": start_seq + index,
             }
+            if keyboard and index == 1:
+                body["keyboard"] = keyboard
             if passive_id:
                 body["msg_id"] = passive_id
             try:
@@ -358,8 +375,13 @@ class QQBotChannel(NotificationChannel):
             sent += 1
         return SendResult(channel=self.name, ok=True, parts=sent, status_code=200)
 
-    async def send(self, title: str, content: str) -> SendResult:
-        """Send the digest, splitting it when it is too long."""
+    async def send(
+        self, title: str, content: str, *, keyboard: dict[str, Any] | None = None
+    ) -> SendResult:
+        """Send the digest, splitting it when it is too long.
+
+        ``keyboard`` 是可选的内嵌按钮面板（与 :meth:`send_rich` 同一个字段）。
+        """
         if not self.configured():
             missing = []
             if not self._settings.qq_enabled:
@@ -395,7 +417,9 @@ class QQBotChannel(NotificationChannel):
             except (httpx.HTTPError, RuntimeError) as exc:
                 return SendResult(channel=self.name, ok=False, error=f"token: {exc}")
             headers = {"Authorization": f"QQBot {token}", "Content-Type": "application/json"}
-            return await self._post_text(client, endpoint, headers, title, content)
+            return await self._post_text(
+                client, endpoint, headers, title, content, keyboard=keyboard
+            )
         finally:
             if self._owns_client:
                 await client.aclose()

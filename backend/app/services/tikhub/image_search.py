@@ -33,6 +33,7 @@ GET /api/v1/xiaohongshu/app_v2/search_images?keyword=数据结构&page=1
 from __future__ import annotations
 
 import logging
+import re
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -81,6 +82,42 @@ class FoundImage:
             "local_path": self.local_path,
             "bytes": self.bytes,
         }
+
+
+def _normalize(text: str) -> str:
+    """归一化后比较：去空格、统一大小写。
+
+    必须去空格：真实数据里出现过 ``B + 树`` 与 ``B+树``，直接包含比较会漏掉前者。
+    """
+    return re.sub(r"\s+", "", text or "").casefold()
+
+
+def is_relevant(image: FoundImage, topic: str, *, loose: bool = False) -> bool:
+    """来源笔记的标题或正文里是否真的出现了主题词。
+
+    **这是解决"图不对题"的关键一步。** 小红书图片搜索是**宽松的文本匹配**：搜
+    「红黑树」会返回「红黑美学」「树的哲学」这类自然摄影与壁纸（它把"红黑"和"树"当两个
+    词分别匹配了），也会返回「红豆杉树墙」「树冠羞避」这类园艺内容。所以"搜到图"完全不
+    等于"图与主题相关"。
+
+    我们看不到图，但**看得到来源笔记的标题与正文**——那是免费且有效的判据。
+
+    ``loose=True`` 时再宽一档：把主题里的 ``+``/``-``/``#``/空格 去掉后比较。
+    这是为了「B+树」这种写法——实测「这样构建3阶B树对吗」「B树」都被精确匹配误杀了，
+    而 B 树与 B+树 的图对读者是通用的。
+    """
+    needle = _normalize(topic)
+    if not needle:
+        return True
+    haystack = _normalize(f"{image.title} {image.description}")
+    if needle in haystack:
+        return True
+    if loose:
+        stripped = re.sub(r"[+\-#·、,，.。/／]+", "", needle)
+        # 太短的残片（如只剩「树」）会放进一堆无关内容，所以要求至少 2 个字符。
+        if len(stripped) >= 2 and stripped in haystack:
+            return True
+    return False
 
 
 def _pick_url(image_info: dict[str, Any]) -> str:
@@ -204,6 +241,89 @@ async def search_images(
     return normalize_images(items)[:limit]
 
 
+#: 检索词后缀，按"命中相关图的概率"排序。裸主题词实测会捞回同名不同域的内容
+#: （搜「红黑树」得到「红黑美学」壁纸），加「图解」显著提高命中；
+#: 「原理」「笔记」作为备选，在前一个不够时才用。
+QUERY_SUFFIXES: tuple[str, ...] = ("图解", "原理", "笔记")
+
+#: 最多为一批配图花几次搜索调用。1 次约 $0.0078，所以这里既是质量也是成本的旋钮。
+MAX_SEARCH_ATTEMPTS = 2
+
+
+async def search_topic_images(
+    topic: str,
+    *,
+    want: int,
+    settings: Settings | None = None,
+) -> tuple[list[FoundImage], dict[str, Any]]:
+    """为某个主题找配图：**自适应地试检索词，够用就停**。
+
+    先用「<主题> 图解」；相关图不足 ``want`` 张时再用「原理」，最多 ``MAX_SEARCH_ATTEMPTS`` 次。
+    这样常见的顺利情况只花 1 次调用，只有确实搜不到时才多花一次——
+    而不是每次都固定烧 3 次。
+
+    返回 ``(images, report)``；``report`` 里记了每个检索词各拿到几张，便于事后判断
+    是"这个词不好"还是"小红书上就是没有这个主题的图"。
+    """
+    resolved = settings or get_settings()
+    core = topic.strip()
+    if not core:
+        return [], {"errors": ["主题为空"], "attempts": []}
+
+    collected: list[FoundImage] = []
+    seen: set[str] = set()
+    attempts: list[dict[str, Any]] = []
+    last_summary: dict[str, Any] = {}
+
+    for suffix in QUERY_SUFFIXES[: MAX_SEARCH_ATTEMPTS if want <= 6 else MAX_SEARCH_ATTEMPTS + 1]:
+        query = f"{core} {suffix}"
+        found, summary = await search_and_download(
+            query,
+            # 过滤会剔掉一批，所以每次都要得比目标多。
+            limit=max(want * 3, want + 4),
+            settings=resolved,
+            topic=core,
+        )
+        last_summary = summary
+        added = 0
+        for image in found:
+            key = image.note_id or image.url
+            if key in seen:
+                continue
+            seen.add(key)
+            collected.append(image)
+            added += 1
+        attempts.append(
+            {
+                "query": query,
+                "relevant": summary.get("relevant", 0),
+                "added": added,
+                "dropped": len(summary.get("dropped_titles") or []),
+            }
+        )
+        logger.info(
+            "image search for %r: %r -> %d relevant (%d new)",
+            core,
+            query,
+            summary.get("relevant", 0),
+            added,
+        )
+        if len(collected) >= want:
+            break
+
+    report = dict(last_summary)
+    report["attempts"] = attempts
+    report["queries_used"] = len(attempts)
+    report["relevant"] = len(collected)
+    report["note"] = (
+        f"共试了 {len(attempts)} 个检索词："
+        + "；".join(f"{a['query']}→{a['relevant']}张" for a in attempts)
+        + "。"
+        + (last_summary.get("note") or "")
+    )
+    return collected[:want], report
+
+
 async def search_and_download(
     keyword: str,
     *,
@@ -211,17 +331,52 @@ async def search_and_download(
     page: int = 1,
     settings: Settings | None = None,
     client: Any | None = None,
+    topic: str = "",
+    require_relevant: bool = True,
 ) -> tuple[list[FoundImage], dict[str, Any]]:
     """搜图并**立刻下载进素材库**。返回 ``(images, report)``。
 
-    先下载后使用是必须的：这些是签名 URL，过期后就连不上了（项目里已经栽过一次）。
+    ``topic`` 是**相关性判据**（通常是文章主题）。给定时只保留来源笔记标题/正文里真的
+    出现了该词的条目——不然会混进「红黑美学」这类同名不同域的图（实测踩到过）。
+    注意 ``keyword`` 与 ``topic`` 可以不同：前者用于检索（可以加「图解」提高命中），
+    后者用于过滤。
+
+    先下载后使用是必须的：这些是签名 URL，过期后就连不上了。
     """
     resolved = settings or get_settings()
     images = await search_images(
         keyword, limit=limit, page=page, settings=resolved, client=client
     )
+    found_total = len(images)
+
+    dropped: list[str] = []
+    loosened = 0
+    if require_relevant and topic.strip():
+        strict: list[FoundImage] = []
+        weak: list[FoundImage] = []
+        for image in images:
+            if is_relevant(image, topic):
+                strict.append(image)
+            elif is_relevant(image, topic, loose=True):
+                # 宽匹配命中的（如搜「B+树」时的「B树」）排在精确命中之后。
+                weak.append(image)
+            else:
+                dropped.append(str(image.title or "")[:30])
+        loosened = len(weak)
+        images = (strict + weak)[:limit]
+
     if not images:
-        return [], {"searched": 0, "downloaded": 0, "errors": ["没有搜到可用图片"]}
+        return [], {
+            "searched": found_total,
+            "relevant": 0,
+            "downloaded": 0,
+            "errors": [
+                f"搜到的 {found_total} 条里没有与「{topic or keyword}」相关的"
+                "（配图来自他人笔记的封面，检索是宽松文本匹配，容易混进同名不同域的内容）。"
+                "可以换个说法重搜，例如加「图解」「原理」，或改用文字生成配图。"
+            ],
+            "dropped_titles": dropped[:6],
+        }
 
     # 复用 MediaStore：格式识别、大小上限、内容寻址去重都是现成的。
     bundle = MediaBundle(
@@ -237,17 +392,31 @@ async def search_and_download(
 
     downloaded = sum(1 for image in images if image.local_path)
     summary = {
-        "searched": len(images),
+        "searched": found_total,
+        "relevant": len(images),
+        "loose_matches": loosened,
         "downloaded": downloaded,
         "failed": len(images) - downloaded,
+        "dropped_titles": dropped[:6],
         "errors": list(getattr(report, "errors", []) or [])[:5],
         "note": (
             "图片已下载到本地素材库——平台链接会过期，不下载就用不了。"
             "这些图来自他人笔记，每条都保留了作者与原文链接用于署名。"
+            + (
+                f"已剔除 {len(dropped)} 张来源笔记里没出现主题词的（同名不同域，如搜「红黑树」"
+                "捞到的自然摄影与壁纸）。"
+                if dropped
+                else ""
+            )
+            + (f"其中 {loosened} 张是宽匹配（如 B树 之于 B+树）。" if loosened else "")
         ),
     }
     logger.info(
-        "image search %r: %d found, %d downloaded", keyword, len(images), downloaded
+        "image search %r: %d found, %d relevant, %d downloaded",
+        keyword,
+        found_total,
+        len(images),
+        downloaded,
     )
     return images, summary
 

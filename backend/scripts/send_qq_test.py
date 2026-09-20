@@ -37,8 +37,10 @@ async def main() -> int:
     print("正在发送 1 条测试消息…")
     result = await channel.send(
         "SocialHot AI 连通性测试",
-        "这是一条测试消息，用于确认机器人能向本群发送文本。\n"
-        "接下来会推送「二创图文」与「原帖图文」两条内容。",
+        "这是一条测试消息，用于确认机器人能**主动**向本群发送文本（不需要有人 @）。\n"
+        "如果你收到了，说明主动消息权限可用，早中晚定时推送就能工作。\n"
+        "（这条只测连通性，不会再发别的内容——要推具体图文请用 "
+        "scripts/push_item_proactive.py）",
     )
     print(f"ok={result.ok} parts={result.parts} status={result.status_code}")
     if result.error:

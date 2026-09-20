@@ -12,26 +12,37 @@
 .env.*
 !.env.example
 
+# ⚠️ 目录规则一律**锚定到仓库根**（前导 `/`）。
+#
+# 这不是风格问题：未锚定的 `media/` 会匹配**任意层级**下叫 media 的目录，
+# 于是把源码模块 `backend/app/services/media/` 一起排除了——它因此从未被提交，
+# 换台机器全新 clone 直接 `ModuleNotFoundError: No module named 'app.services.media'`。
+# 实测踩过：Jetson 上部署卡在这一步。
+# 新增"忽略某个运行期目录"的规则时，**务必写前导斜杠**。
+
 # Python
 __pycache__/
 *.py[cod]
 *.egg-info/
 .pytest_cache/
-.venv/
-venv/
+/backend/.venv/
+/backend/venv/
 
 # Local PostgreSQL cluster (Phase 2) — data, not source
-.pgdata/
-pg-server.log
+/.pgdata/
+/pg-server.log
 
 # Node (Phase 7 frontend)
-node_modules/
-dist/
-.vite/
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.vite/
 
 # Downloaded image material (Phase 9). Not source: it is a local cache of other
 # people's pictures, they are large, and the provider URLs they came from expire.
-media/
+/media/
+
+# Runtime logs (backend/logs 由启动脚本写入)
+/backend/logs/
 
 # Editors / OS
 .vscode/

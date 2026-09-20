@@ -132,7 +132,12 @@ async def main(hot_content_id: int, *, sandbox: bool, max_images: int | None) ->
 
 async def _session(websockets: Any, url: str, token: str, settings: Any, report: Any) -> bool:
     """一次网关会话。返回 True 表示全部发完。"""
-    async with websockets.connect(url, additional_headers=HEADERS, ping_interval=20) as websocket:
+    # proxy=None 是必须的：websockets 会读 Windows 注册表的系统代理（本机是
+    # 127.0.0.1:7890 的 Clash），绕过去就会"连上了却收不到事件"。项目其他地方
+    # 一律 trust_env=False，这里同理。
+    async with websockets.connect(
+        url, additional_headers=HEADERS, ping_interval=20, proxy=None
+    ) as websocket:
         hello = json.loads(await websocket.recv())
         interval = float(hello.get("d", {}).get("heartbeat_interval") or 40000) / 1000
         await websocket.send(

@@ -99,6 +99,106 @@ def format_digest(
     return "\n".join(lines)
 
 
+#: 平台 → 搜索页模板。**没有原始链接时用搜索页兜底**，保证每条都能点进去。
+#: 实测链接覆盖率：小红书 100%、微博 88%、**抖音只有 45%**（榜单很多是关键词条目、
+#: 不是具体帖子，拿不到 url）。只给标题等于没给。
+SEARCH_URL_TEMPLATES: dict[str, str] = {
+    "douyin": "https://www.douyin.com/search/{q}",
+    "weibo": "https://s.weibo.com/weibo?q={q}",
+    "xiaohongshu": "https://www.xiaohongshu.com/search_result?keyword={q}",
+}
+#: 这些域名的地址去掉查询串仍可用，而查询串是几百字符的跟踪参数
+#: （实测抖音带 600+ 字符的 mid/u_code/share_sign…）。小红书的 xsec_token 必须保留。
+STRIPPABLE_HOSTS = ("iesdouyin.com", "douyin.com", "xiaohongshu.com", "xhslink.cn")
+
+
+def item_link(item: Any, title: str = "") -> str:
+    """挑一个可点的链接；没有原始链接就退回平台搜索页。
+
+    **只接受 http(s)。** 实测源数据里出现过 ``javascript:void(0);`` 这种占位值——
+    直接透传会给用户一个点了没反应的"链接"，比不给更糟。
+    """
+    from urllib.parse import quote, urlparse, urlunparse
+
+    raw = str(getattr(item, "url", "") or "").strip()
+    if raw.startswith(("http://", "https://")):
+        try:
+            parsed = urlparse(raw)
+            host = parsed.netloc.lower()
+            if parsed.query:
+                # 微博只留 q（搜索词），其余都是跟踪参数；小红书要留 xsec_token。
+                if host.endswith("weibo.com"):
+                    keep_keys = ("q",)
+                elif any(host.endswith(c) for c in STRIPPABLE_HOSTS):
+                    keep_keys = ("xsec_token", "xsec_source")
+                else:
+                    keep_keys = ()
+                if keep_keys:
+                    kept = [
+                        pair
+                        for pair in parsed.query.split("&")
+                        if pair.split("=", 1)[0] in keep_keys
+                    ]
+                    raw = urlunparse(parsed._replace(query="&".join(kept)))
+        except ValueError:
+            pass
+        return raw
+
+    # 没有可用链接（缺失或是 javascript: 之类）→ 用平台搜索页兜底。
+    template = SEARCH_URL_TEMPLATES.get(str(getattr(item, "platform", "")))
+    keyword = (title or str(getattr(item, "title", "") or "")).strip()[:40]
+    return template.format(q=quote(keyword)) if template and keyword else ""
+
+
+def format_digest_compact(
+    entries: Sequence[Any],
+    *,
+    max_items: int = 10,
+    title: str = "🔥 SocialHot AI 今日热点",
+    summary_chars: int = 60,
+) -> str:
+    """**速览版摘要**：给早中晚定时推送用，每条一行标题 + 一句摘要 + 链接。
+
+    为什么要两个格式：审核摘要（``format_digest``）带三平台全文、风险标记、原始链接，
+    实测 6 条就有 **9,373 字符**——按 QQ 单条 800 字符拆分是 **12 条消息**，早中晚各来一次
+    就是 36 条，群里会被刷屏，而且没人是想在手机上读完整长文的。
+
+    速览版一条约 150 字符，10 条约 1,500 字符 = 2 条消息，适合扫一眼再决定点哪个链接。
+    **三平台全文与风险标记仍在后台**（`/api/rewrites`），需要细读时去看。
+    """
+    selected = list(entries)[:max_items]
+    if not selected:
+        return f"{title}\n\n本轮没有新的热点内容。"
+
+    lines = [title, f"共 {len(selected)} 条 · 点链接看原文", RULE]
+    for index, (rewrite, item) in enumerate(selected):
+        headline = (rewrite.xiaohongshu_title or item.title or "(无标题)").strip()
+        lines.append(f"{_marker(index)} {headline}")
+
+        flags: list[str] = [str(item.platform)]
+        if item.hot_value:
+            flags.append(f"热度 {item.hot_value:,}" if isinstance(item.hot_value, int) else f"热度 {item.hot_value}")
+        if rewrite.needs_verification:
+            # 速览也要保留"需核实"这个信号——否则有人会照着标题就去发。
+            flags.append("⚠️需核实")
+        lines.append("   " + " · ".join(flags))
+
+        # **每条都要有可点的链接**（用户明确要求）。没有原始链接就退回平台搜索页，
+        # 否则看到感兴趣的标题也没法点进去看。
+        link = item_link(item, headline)
+        if link:
+            lines.append(f"   {link}")
+
+        # 一句摘要放最后：链接在标题正下方最容易被点到，摘要只是补充。
+        gist = (rewrite.summary or item.description or "").strip().replace("\n", " ")
+        if gist:
+            lines.append(f"   {gist[:summary_chars]}{'…' if len(gist) > summary_chars else ''}")
+
+    lines.append(RULE)
+    lines.append("需要看三平台全文与风险标记，请到后台「二创审核」。系统不会自动发布。")
+    return "\n".join(lines)
+
+
 @dataclass
 class NotificationOutcome:
     """What the manager did with one message."""
@@ -198,6 +298,7 @@ class NotificationManager:
         *,
         content_ids: Sequence[int] | None = None,
         max_items: int | None = None,
+        style: str = "compact",
     ) -> NotificationOutcome:
         """Render and send the digest for the rewrites of this run.
 
@@ -205,6 +306,10 @@ class NotificationManager:
         covers what this run produced. When it is absent (a manual ``notify`` run),
         the most recent rewrites are used instead — a fallback that is documented
         rather than silent.
+
+        ``style`` 决定用哪个格式：``"compact"``（默认，速览）或 ``"full"``（审核摘要）。
+        **默认是速览**：定时推送一天三次，用完整摘要实测是 12 条消息/次，群里会被刷屏。
+        需要细读时去后台「二创审核」，那里的信息一点没少。
         """
         limit = max_items or self._settings.notification_max_items
         if entries is None:
@@ -213,7 +318,10 @@ class NotificationManager:
             return await self.send(
                 "SocialHot AI 通知", "本次运行没有产生需要审核的二创内容。"
             )
-        digest = format_digest(entries, max_items=limit)
+        if style == "full":
+            digest = format_digest(entries, max_items=limit)
+        else:
+            digest = format_digest_compact(entries, max_items=limit)
         return await self.send("SocialHot AI 今日热点", digest)
 
     async def _load_entries(
@@ -240,4 +348,10 @@ class NotificationManager:
         return await self.send("SocialHot AI 通知测试", content)
 
 
-__all__ = ["NotificationManager", "NotificationOutcome", "format_digest", "RULE"]
+__all__ = [
+    "NotificationManager",
+    "NotificationOutcome",
+    "RULE",
+    "format_digest",
+    "format_digest_compact",
+]

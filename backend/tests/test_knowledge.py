@@ -271,7 +271,7 @@ async def test_article_generation_records_each_step_separately(
         lambda settings: StubDeepSeekClient([GOOD_ARTICLE, GOOD_PLATFORMS]),
     )
 
-    async def fake_search(keyword, *, limit, settings, client=None):
+    async def fake_search(keyword, *, limit, settings, client=None, topic="", require_relevant=True):
         from app.services.tikhub.image_search import FoundImage
 
         return (
@@ -284,7 +284,7 @@ async def test_article_generation_records_each_step_separately(
                     local_path="media/aa/1.jpg",
                 )
             ],
-            {"searched": 1, "downloaded": 1},
+            {"searched": 1, "relevant": 1, "downloaded": 1},
         )
 
     import app.services.tikhub.image_search as image_search_module
@@ -570,3 +570,44 @@ async def test_a_retry_that_succeeds_saves_the_article(knowledge_settings, monke
     assert result.ok, result.error
     assert result.steps["article_retry"]["reason"] == "invalid_json"
     assert result.article["title"] == GOOD_ARTICLE["title"]
+
+
+@pytest.mark.asyncio
+async def test_the_platform_step_retries_after_invalid_json(knowledge_settings, monkeypatch):
+    """**回归测试：文章成功但三平台为空。**
+
+    实测：文章那一步遇到非法 JSON 会自动重试（已修），但平台那一步没有——于是出现了
+    「已生成《…》（没有小红书版本）」这种回复：用户等了 74 秒、付了钱，却拿不到可用的
+    内容。两步必须用同样的策略：JSON 不合法就重试一次，并要求更严格的格式。
+    """
+    from app.services import knowledge_service
+    from app.services.ai.deepseek import DeepSeekJSONError
+    from app.services.ai.knowledge import PLATFORM_SYSTEM_PROMPT
+    import app.services.ai.deepseek as deepseek_module
+
+    platform_calls: list[str] = []
+
+    class PlatformBrokenOnce(StubDeepSeekClient):
+        def __init__(self) -> None:
+            super().__init__([GOOD_ARTICLE, GOOD_PLATFORMS])
+            self.platform_failed = False
+
+        async def complete_json(self, *, system, user, **kwargs):
+            if system == PLATFORM_SYSTEM_PROMPT:
+                platform_calls.append(user)
+                if not self.platform_failed:
+                    self.platform_failed = True
+                    raise DeepSeekJSONError("字符串里有未转义的引号")
+            return await super().complete_json(system=system, user=user, **kwargs)
+
+    monkeypatch.setattr(
+        deepseek_module, "DeepSeekClient", lambda settings: PlatformBrokenOnce()
+    )
+    result = await knowledge_service.generate_article(
+        "mysql", settings=knowledge_settings, with_images=False
+    )
+    assert result.ok, result.error
+    assert len(platform_calls) == 2, "平台步骤应当重试一次"
+    assert "上一版 JSON 不合法" in platform_calls[1], "重试要说明原因并要求严格 JSON"
+    assert result.article["platforms"], "重试成功后三平台不该是空的"
+    assert "xiaohongshu" in result.article["platforms"]

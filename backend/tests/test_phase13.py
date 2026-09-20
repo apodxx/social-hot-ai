@@ -109,6 +109,49 @@ def test_url_preference_prefers_the_original():
     assert normalize_images([{"image_info": {"url": "not-a-url"}}]) == []
 
 
+def test_relevance_filter_rejects_same_words_different_domain():
+    """**回归测试：解决"图不对题"。**
+
+    小红书图片搜索是**宽松文本匹配**。实测搜「红黑树」拿回的配图来自：
+      * 「壁纸 #红黑美学 #自然治愈 #树的哲学」——它把"红黑"和"树"当两个词分别匹配；
+      * 「功夫不负有心人之六尺红豆杉树墙」——园艺内容，只匹配了"树"。
+
+    我们看不到图，但看得到来源笔记的标题与正文——用它在下载前就能剔掉这些。
+    """
+    from app.services.tikhub.image_search import FoundImage, is_relevant
+
+    def note(title: str, description: str = "") -> FoundImage:
+        return FoundImage(url="https://x/1.jpg", title=title, description=description)
+
+    # 真实的误召回：同名不同域，必须剔除。
+    assert not is_relevant(note("壁纸 #红黑美学 #自然治愈 #树的哲学"), "红黑树")
+    assert not is_relevant(note("功夫不负有心人之六尺红豆杉树墙"), "B+树")
+    assert not is_relevant(note("留白美学：树冠羞避"), "B+树")
+    assert not is_relevant(note("🩸", "#审美#艺术#树#枝"), "红黑树")
+
+    # 真正相关的保留。
+    assert is_relevant(note("红黑树原理图解"), "红黑树")
+    assert is_relevant(note("B+树"), "B+树")
+    assert is_relevant(note("B树/B+树常考知识点"), "B+树")
+
+    # 归一化：真实数据里出现过 "B + 树"（带空格），直接包含比较会漏掉它。
+    assert is_relevant(note("二叉树、红黑树、B + 树适用场景对比"), "B+树")
+    # 正文里出现也算（有些笔记标题是水文，正文才对题）。
+    assert is_relevant(note("随手记", "今天把红黑树的插入调整搞懂了"), "红黑树")
+
+    # 主题为空时不过滤（避免把一切都丢掉）。
+    assert is_relevant(note("任何标题"), "")
+
+
+def test_media_fetch_failures_are_never_stored():
+    """媒体下载失败的行不该被当成"有图"。"""
+    from app.services.tikhub.image_search import FoundImage
+
+    image = FoundImage(url="https://x/1.jpg", title="B+树")
+    assert image.local_path == "", "默认没有本地路径"
+    assert image.as_dict()["local_path"] == ""
+
+
 def test_found_image_serialises_for_the_api():
     image = FoundImage(
         url="https://x/1.jpg",

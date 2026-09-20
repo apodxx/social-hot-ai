@@ -408,7 +408,14 @@ def test_notification_test_endpoint_sends_through_the_log_channel(api):
     assert outcome["channels_tried"][0]["detail"]["note"].startswith("logged only")
 
 
-def test_notification_test_is_refused_when_disabled(api_without_key):
+def test_notification_test_is_refused_when_disabled(api_without_key, monkeypatch):
+    """通知开关关着时，测试接口必须拒绝并说明原因。
+
+    这里显式设 ``NOTIFICATION_ENABLED=false``：它是**部署选择**（本项目会打开它跑早中晚
+    推送），不该依赖开发者 ``.env`` 里凑巧是关的——否则一开推送测试就红了。
+    """
+    monkeypatch.setenv("NOTIFICATION_ENABLED", "false")
+    get_settings.cache_clear()
     response = api_without_key.post("/api/notification/test")
     assert response.status_code == 503
     assert "NOTIFICATION_ENABLED" in response.json()["detail"]

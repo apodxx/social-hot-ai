@@ -80,7 +80,9 @@ async def main(app_id: str, secret: str, *, sandbox: bool) -> int:
         print(f"网关地址：{url}")
 
     intents = INTENT_GROUP_AND_C2C | INTENT_PUBLIC_MESSAGES
-    async with websockets.connect(url, additional_headers=HEADERS) as websocket:
+    # proxy=None：避开 Windows 注册表的系统代理（本机 127.0.0.1:7890 的 Clash），
+    # 否则会连上却收不到事件。
+    async with websockets.connect(url, additional_headers=HEADERS, proxy=None) as websocket:
         hello = json.loads(await websocket.recv())
         if hello.get("op") != OP_HELLO:
             print(f"握手异常：{hello}")
@@ -118,6 +120,20 @@ async def main(app_id: str, secret: str, *, sandbox: bool) -> int:
                 if kind == "READY":
                     print("机器人已就绪，等待群消息…")
                     continue
+                # **打印每一个事件类型。** 第一版只认 GROUP_AT_MESSAGE_CREATE，
+                # 其它一律静默忽略——于是"消息没到"和"消息到了但类型不同"看起来一模一样，
+                # 白白浪费了一轮排查。群消息其实有两种：
+                #   GROUP_AT_MESSAGE_CREATE  —— @机器人 时
+                #   GROUP_MESSAGE_CREATE     —— 群里的普通消息（需另一档订阅）
+                summary = ""
+                if isinstance(data, dict):
+                    summary = str(
+                        data.get("content")
+                        or data.get("group_openid")
+                        or data.get("message_scene")
+                        or ""
+                    )[:50]
+                print(f"[事件] {kind or '(无类型)'}  {summary}")
                 if kind == "GROUP_AT_MESSAGE_CREATE":
                     group_openid = data.get("group_openid")
                     print("=" * 60)
