@@ -1277,17 +1277,19 @@ async def route_and_execute(
             else:
                 print(f"  文案生成失败（{conversion.error[:60]}），退回用原始素材")
 
-        from app.services.ai.agent import image_prompt_from
+        from app.services.ai.agent import image_prompts_from
         from app.services.ai.image_gen import QwenImageClient, download_generated
 
-        prompt = await image_prompt_from(material, settings=settings)
-        print(f"  生图提示词：{prompt[:80]}")
+        # **先设计 shot list**：每张图各选一个认知锚点，避免"一条提示词画 N 张"雷同。
+        prompts = await image_prompts_from(material, count=count, settings=settings)
+        for index, prompt in enumerate(prompts, start=1):
+            print(f"  第 {index} 张的锚点提示词：{prompt[:70]}")
 
         client = QwenImageClient(settings)
         saved: list[str] = []
         failures: list[str] = []
         try:
-            for index in range(1, count + 1):
+            for index, prompt in enumerate(prompts, start=1):
                 result = await client.edit_image(prompt=prompt, reference_paths=[])
                 if not result.ok:
                     failures.append(result.error or "未知错误")
@@ -1295,7 +1297,7 @@ async def route_and_execute(
                 paths, errors = await download_generated(result.urls, settings=settings)
                 saved.extend(paths)
                 failures.extend(errors)
-                print(f"  第 {index}/{count} 张完成（{result.elapsed_ms / 1000:.0f}s）")
+                print(f"  第 {index}/{len(prompts)} 张完成（{result.elapsed_ms / 1000:.0f}s）")
                 # **每生成完一张立刻发。** 之前是等全部生成完再一起发，2 张就要 4 分钟，
                 # 逼近被动回复的 5 分钟窗口；而且用户在这几分钟里看不到任何进展。
                 # 图片走**主动消息**（不带 msg_id），不受那个窗口限制。
@@ -1586,28 +1588,31 @@ async def _attach_generated_images(
 
     图也走主动消息，且**生成一张发一张**——这样第一张不至于等第二张。
     """
-    from app.services.ai.agent import image_prompt_from
+    from app.services.ai.agent import image_prompts_from
     from app.services.ai.image_gen import QwenImageClient, download_generated
 
     # 文案先走主动消息。
     await channel.send_rich("回复", text, [], keyboard=COMMAND_KEYBOARD)
 
-    prompt = await image_prompt_from(text, settings=settings)
-    print(f"  生图提示词：{prompt[:70]}")
+    # **先设计 shot list，再逐张画。** 一条提示词画 N 张出来的图必然雷同；
+    # 让模型为每张图各选一个不同的「认知锚点」，图才有信息量。
+    prompts = await image_prompts_from(text, count=count, settings=settings)
+    for index, prompt in enumerate(prompts, start=1):
+        print(f"  第 {index} 张的锚点提示词：{prompt[:60]}")
     client = QwenImageClient(settings)
     saved = 0
     try:
-        for index in range(1, count + 1):
+        for index, prompt in enumerate(prompts, start=1):
             result = await client.edit_image(prompt=prompt, reference_paths=[])
             if not result.ok:
-                print(f"  第 {index}/{count} 张失败：{result.error}")
+                print(f"  第 {index}/{len(prompts)} 张失败：{result.error}")
                 continue
             paths, errors = await download_generated(result.urls, settings=settings)
             for error in errors:
                 print(f"  下载失败：{error}")
             if paths:
                 saved += len(paths)
-                print(f"  第 {index}/{count} 张完成（{result.elapsed_ms / 1000:.0f}s）")
+                print(f"  第 {index}/{len(prompts)} 张完成（{result.elapsed_ms / 1000:.0f}s）")
                 sent = await channel.send_rich("", "", paths, images_only=True)
                 if not sent.ok:
                     print(f"  发图失败：{sent.error}")
@@ -1616,7 +1621,8 @@ async def _attach_generated_images(
     if saved:
         await channel.send_rich(
             "回复",
-            f"{label}配图 {saved} 张已发出（文生图，约 ¥{0.25 * saved:.2f}）。",
+            f"{label}配图 {saved} 张已发出（白底手绘风，约 ¥{0.25 * saved:.2f}）。\n"
+            "⚠️ 图上的中文批注可能有错字——AI 画汉字不稳，发布前请核一眼。",
             [],
             keyboard=COMMAND_KEYBOARD,
         )

@@ -439,62 +439,154 @@ def first_url(text: str) -> str:
     return match.group(0) if match else ""
 
 
-#: 把素材变成**生图提示词**。要点：
-#: * 只描述**画面**（主体、场景、光线、构图、色调），不要把正文照抄进去；
-#: * **不要出现文字**——文生图画出来的汉字基本都是乱码；
-#: * 竖版构图，给标题留位置（小红书封面习惯）。
-IMAGE_PROMPT_SYSTEM = """你把一段素材改写成**文生图提示词**，用来画小红书封面图。
+#: 生图提示词的系统指令。
+#:
+#: 风格参考 Ian Xiaohei Illustrations（MIT）的「怪诞正文配图」：白底手绘、大量留白、
+#: 一个极简黑色小角色承担核心动作、少量短中文批注。
+#:
+#: **两处刻意的取舍：**
+#: * **允许中文批注**——小红书封面本来就喜欢带大字，之前我把文字全禁掉，反而丢了这个
+#:   平台最有效的元素。但 AI 画汉字必然有错字风险，所以强制"每条 2-6 字、最多 3 条"，
+#:   并要求生成后人工检查（README 也这么说：字越短越稳定）。
+#: * **必须出 shot list 而不是一条提示词**——一条提示词画 N 张，出来的图必然雷同；
+#:   强制每张图各自选一个不同的「认知锚点」，图才有信息量。
+IMAGE_PROMPT_SYSTEM = """你为一个中文知识类账号设计**正文配图**，并写出可直接生图的提示词。
 
-规则：
-1. 只描述画面：主体、场景、道具、光线、色调、构图。**不要复述素材内容**。
-2. **绝对不要在画面里放任何文字或字母**——文生图写汉字一定是乱码。
-3. 竖版构图（3:4），画面上方留出空白区域，方便后期加标题。
-4. 风格：干净、明亮、真实感，适合大学生群体，不要夸张的科幻或赛博风格。
-5. 直接输出一段 60-120 字的提示词，**不要任何解释、不要分行**。
+## 先做减法：为每张图选一个「认知锚点」
+
+图不是文章的装饰，而是**把其中一个判断、流程、状态或隐喻画出来**。
+每张图**只讲一个概念**——不要把整篇内容塞进一张图。
+
+可选的结构类型：流程、系统局部、前后对比、角色状态、概念隐喻、方法分层、地图路线。
+
+## 统一视觉风格（每张都必须一致）
+
+- **纯白背景**：不要纸纹、米色、阴影、渐变、边框。
+- **黑色手绘线稿**：细线、轻微抖动感，像手绘草图，不要 3D、不要写实、不要扁平矢量。
+- **大量留白**：主体只占画面 40%-60%，四周留空。
+- **主角**：一个极简的黑色实心小角色（白点眼、细腿、没有表情）。
+  它**必须正在做核心动作**——扛、拉、塞、接、修、分拣……
+  如果把它去掉、画面照样成立，说明它只是个装饰，必须重设计。
+- **少量中文批注**：红色/橙色/蓝色手写体，**每条 2-6 个字，一张图最多 3 条**。
+  字越短越不容易出错——这是硬要求。
+- 怪诞、有创意、清爽；**不幼稚、不卖萌、不要表情包风**。
+
+## 输出格式
+
+只输出 JSON，不要解释、不要代码围栏：
+
+{"shots": [{"anchor": "这张图讲的认知锚点，10 字内",
+            "structure": "结构类型",
+            "action": "小角色在做什么",
+            "annotations": ["批注1", "批注2"],
+            "prompt": "给图像模型的完整中文提示词，包含上面的风格要求"}]}
+
+提示词里必须写清：纯白背景、黑色手绘线稿、大量留白、小角色及其动作、
+要出现的中文批注文字（用引号标出）、画面比例。
+
+**画面比例必须与调用方给出的目标尺寸一致**（下面会告诉你尺寸）。
+写错比例会让提示词与实际输出打架——实测出现过提示词写"横版16:9"、
+而实际生成 1024×1024 正方形的情况。
 """
 
 
-async def image_prompt_from(
-    material: str, *, settings: Settings, client: Any | None = None
-) -> str:
-    """把素材（正文/视频理解结果/用户描述）压成一条生图提示词。**一次便宜的调用。**"""
+def _parse_shots(raw: str, count: int) -> list[str]:
+    """从模型返回里解析出每张图的提示词。宽容处理：拿不到 JSON 就按行切。"""
+    import json as _json
+
+    text = (raw or "").strip()
+    if text.startswith("```"):
+        text = re.sub(r"^```[a-zA-Z]*\s*|\s*```$", "", text).strip()
+    for loader in (
+        lambda value: _json.loads(value, strict=False),
+        lambda value: _json.loads(value[value.find("{") : value.rfind("}") + 1], strict=False),
+    ):
+        try:
+            payload = loader(text)
+        except Exception:  # noqa: BLE001
+            continue
+        shots = payload.get("shots") if isinstance(payload, dict) else payload
+        if not isinstance(shots, list):
+            continue
+        prompts: list[str] = []
+        for shot in shots:
+            if isinstance(shot, dict):
+                prompt = str(shot.get("prompt") or "").strip()
+                if prompt:
+                    prompts.append(prompt)
+            elif isinstance(shot, str) and len(shot) > 20:
+                prompts.append(shot.strip())
+        if prompts:
+            return prompts[:count]
+    # 兜底：模型没给 JSON，就把长行当提示词（总比什么都不画好）。
+    lines = [line.strip() for line in text.splitlines() if len(line.strip()) > 30]
+    return lines[:count]
+
+
+async def image_prompts_from(
+    material: str, *, count: int = 2, settings: Settings, client: Any | None = None
+) -> list[str]:
+    """为素材设计 ``count`` 张**各不相同**的配图提示词。**一次便宜的调用。**
+
+    返回的每一条都能直接用；拿不到就退回一条通用提示词（至少别画不出来）。
+    """
     from app.services.ai.deepseek import DeepSeekClient, DeepSeekError
 
-    trimmed = (material or "").strip()[:1500] or "大学生的电子设备"
-    owned = client is None
-    active = client or DeepSeekClient(settings)
+    wanted = max(1, min(6, count))
+    trimmed = (material or "").strip()[:2000] or "大学生的日常学习"
     messages = [
         {"role": "system", "content": IMAGE_PROMPT_SYSTEM},
-        {"role": "user", "content": trimmed},
+        {
+            "role": "user",
+            "content": (
+                f"目标尺寸：{settings.image_gen_size}（请让画面比例与它一致）\n"
+                f"请为下面这段内容设计 {wanted} 张正文配图，每张选一个不同的认知锚点。\n\n{trimmed}"
+            ),
+        },
     ]
-    prompt = ""
+    owned = client is None
+    active = client or DeepSeekClient(settings)
+    raw = ""
+    # 额度给足：它是推理模型，思考 token 也计入 completion（本项目已踩过四次）。
+    budget_tokens = max(8192, settings.article_max_tokens)
     try:
         result = await active.chat(
-            messages, json_mode=False, temperature=0.7, max_tokens=1024
+            messages, json_mode=False, temperature=0.9, max_tokens=budget_tokens
         )
-        prompt = " ".join((result.content or "").split())
-        if not prompt:
-            # **空正文要重试。** 实测就是这里返回空、退回了兜底提示词，
-            # 于是画出来的图和内容基本无关——而用户只看到"一张泛泛的图"，
-            # 完全不知道提示词那一步失败了。
+        raw = result.content or ""
+        if not raw.strip():
             logger.warning(
-                "image prompt empty (finish_reason=%r); retrying once", result.finish_reason
+                "image prompts empty (finish_reason=%r); retrying", result.finish_reason
             )
             retried = await active.chat(
                 messages
-                + [{"role": "user", "content": "上一版没有输出。请直接给出提示词正文。"}],
+                + [{"role": "user", "content": "上一版没有输出。请直接给出 JSON，不要解释。"}],
                 json_mode=False,
-                temperature=0.9,
-                max_tokens=1024,
+                temperature=0.95,
+                max_tokens=budget_tokens,
             )
-            prompt = " ".join((retried.content or "").split())
+            raw = retried.content or ""
     except DeepSeekError as exc:
         logger.warning("image prompt generation failed: %s", exc)
     finally:
         if owned:
             await active.aclose()
-    # 兜底：两次都没给出提示词时，至少别把正文直接丢给画图模型。
-    return prompt or "一张干净简洁的小红书封面图，竖版构图，画面上方留白，不要出现任何文字"
+
+    prompts = _parse_shots(raw, wanted)
+    if not prompts:
+        prompts = [
+            "纯白背景，黑色手绘线稿，大量留白，画面中央一个极简黑色实心小角色"
+            "（白点眼、细腿、无表情）正在搬运一个方块，周围没有文字。"
+        ]
+    return prompts[:wanted]
+
+
+async def image_prompt_from(
+    material: str, *, settings: Settings, client: Any | None = None
+) -> str:
+    """兼容旧调用方：只要第一条提示词。"""
+    prompts = await image_prompts_from(material, count=1, settings=settings, client=client)
+    return prompts[0]
 
 
 #: 生成选题清单。要点：
