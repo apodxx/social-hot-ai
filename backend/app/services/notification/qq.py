@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import logging
 import time
+from pathlib import Path
 from typing import Any
 
 import httpx
@@ -315,6 +316,91 @@ class QQBotChannel(NotificationChannel):
                 "note": "每张图片是一条独立的 QQ 消息（富媒体接口一次只带一个 file_info）",
             },
         )
+
+
+    async def send_video(
+        self, path: str, *, passive_id: str = "", caption: str = ""
+    ) -> SendResult:
+        """发送一个**视频**文件（富媒体 file_type=2）。
+
+        用户明确要求：视频链接就「下载下来发给我，不生成文案和图片」。
+        与图片的区别只有 ``file_type`` 与校验方式——分片上传流程完全一样，
+        所以共用 ``upload_group_media``，不复制那段逻辑（它踩过坑，复制必然分叉）。
+        """
+        import httpx
+
+        target = self.target
+        if target is None:
+            return SendResult(channel=self.name, ok=False, error="未配置目标群")
+        kind, group_openid = target
+        if kind != "group":
+            return SendResult(channel=self.name, ok=False, error="视频目前只支持群聊")
+
+        settings = self._settings
+        root = settings.media_root_path.parent
+        local = Path(path)
+        if not local.is_absolute():
+            local = root / path
+        if not local.is_file():
+            return SendResult(channel=self.name, ok=False, error=f"文件不存在：{path}")
+
+        own_client = self._client is None
+        client = self._client or httpx.AsyncClient(
+            base_url=self.base_url, timeout=settings.qq_upload_timeout_seconds
+        )
+        try:
+            try:
+                token = await self._access_token(client)
+            except (httpx.HTTPError, RuntimeError) as exc:
+                return SendResult(channel=self.name, ok=False, error=f"token: {exc}")
+            headers = {
+                "Authorization": f"QQBot {token}",
+                "Content-Type": "application/json",
+            }
+            from app.services.notification.qq_media import (
+                VIDEO_FILE_TYPE,
+                upload_group_media,
+            )
+
+            media = await upload_group_media(
+                client,
+                group_openid=group_openid,
+                path=local,
+                headers=headers,
+                file_type=VIDEO_FILE_TYPE,
+            )
+            if not media.ok:
+                return SendResult(channel=self.name, ok=False, error=media.error)
+
+            endpoint = self._endpoint()
+            assert endpoint is not None
+            body: dict[str, Any] = {
+                "msg_type": 7,
+                "media": {"file_info": media.file_info},
+                "msg_seq": 1,
+            }
+            if passive_id:
+                body["msg_id"] = passive_id
+            response = await client.post(endpoint, json=body, headers=headers)
+            if response.status_code >= 400:
+                return SendResult(
+                    channel=self.name,
+                    ok=False,
+                    status_code=response.status_code,
+                    error=f"视频发送被拒：{response.text[:200]}",
+                )
+            return SendResult(
+                channel=self.name,
+                ok=True,
+                status_code=response.status_code,
+                parts=1,
+                detail={"file_info": media.file_info, "file_name": media.file_name},
+            )
+        except Exception as exc:  # noqa: BLE001
+            return SendResult(channel=self.name, ok=False, error=f"{type(exc).__name__}: {exc}")
+        finally:
+            if own_client:
+                await client.aclose()
 
     async def _post_text(
         self,

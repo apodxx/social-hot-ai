@@ -812,6 +812,62 @@ async def newest_hot_items(settings: Settings, count: int) -> list[Any]:
     return list(rows)
 
 
+
+async def maybe_handle_video_download(
+    message: str,
+    *,
+    channel: QQBotChannel,
+    settings: Settings,
+    message_id: str,
+) -> bool:
+    """消息里是抖音**视频**链接时：下载并发回，**不生成文案和图片**。返回是否已处理。
+
+    用户明确的规则：「如果是视频 你帮我下载下来 不生成图片和文案了 然后发给我」。
+    """
+    from app.services.tikhub.video_link import (
+        download_video_file,
+        fetch_douyin_video_url,
+        is_douyin_link,
+    )
+
+    link = first_url(message)
+    if not link or not is_douyin_link(link):
+        return False
+
+    play_url, error = await fetch_douyin_video_url(link, settings=settings)
+    if error or not play_url:
+        # 不是视频（图文笔记）就走正常流程，不在这里回错误——
+        # 图文交给 convert_text_to_note 去取正文和配图。
+        print(f"  不是视频（{error}），走正常流程")
+        return False
+
+    print("  识别为抖音视频 → 下载后直接发回（不生成文案和图片）")
+    await channel.send_rich(
+        "回复", "识别为视频，正在下载，稍等…", [], passive_id=message_id,
+        keyboard=COMMAND_KEYBOARD,
+    )
+    relative, size, download_error = await download_video_file(link, settings=settings)
+    if download_error:
+        await channel.send_rich(
+            "回复", f"视频下载失败：{download_error}", [], keyboard=COMMAND_KEYBOARD
+        )
+        return True
+
+    megabytes = size / 1024 / 1024
+    result = await channel.send_video(relative)
+    if not result.ok:
+        await channel.send_rich(
+            "回复", f"视频下载好了（{megabytes:.1f}MB）但发送失败：{result.error[:120]}",
+            [], keyboard=COMMAND_KEYBOARD,
+        )
+        return True
+    await channel.send_rich(
+        "回复", f"视频已发出（{megabytes:.1f}MB）。按你的规则，视频只下载不生成文案和图片。",
+        [], keyboard=COMMAND_KEYBOARD,
+    )
+    return True
+
+
 async def route_and_execute(
     message: str,
     *,
@@ -836,6 +892,16 @@ async def route_and_execute(
         convert_text_to_note,
         route_intent,
     )
+
+    # **视频链接直接下载发回**（用户明确的规则：不生成文案和图片）。
+    #
+    # 放在路由之前：路由是花钱的（约 ¥0.0025），而"是视频吗"只靠一次 TikHub 调用
+    # 就能确定。既然规则是视频只做下载，就不必先花钱问模型想干什么。
+    early = await maybe_handle_video_download(
+        message, channel=channel, settings=settings, message_id=message_id
+    )
+    if early:
+        return True
 
     intent = await route_intent(message, settings=settings)
     if intent.error:

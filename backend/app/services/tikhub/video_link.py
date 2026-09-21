@@ -342,3 +342,94 @@ async def fetch_douyin_video_material(url: str, *, settings: Any) -> VideoMateri
     if material.ok:
         return VideoMaterial(text=material.text, title=material.caption, tokens=material.tokens)
     return VideoMaterial(error=material.error)
+
+
+#: 视频体积上限。太大就别白下载——QQ 富媒体上传对大小也有限制。
+MAX_VIDEO_BYTES = 200 * 1024 * 1024
+
+
+async def fetch_douyin_video_url(url: str, *, settings: Any) -> tuple[str, str]:
+    """只取抖音视频的**播放地址**，不做理解、不 OCR。返回 ``(地址, 错误)``。
+
+    为什么要单独一个：``fetch_douyin_material`` 会顺手送全模态模型去理解视频
+    （那是有成本的）。用户这次的规则是「视频就下载下来发给我，不生成文案」——
+    那就不该花理解的钱。
+    """
+    import httpx
+
+    if not is_douyin_link(url):
+        return "", "不是抖音链接"
+    try:
+        async with httpx.AsyncClient(timeout=90.0, trust_env=False) as client:
+            response = await client.get(
+                settings.tikhub_base_url.rstrip("/") + FETCH_ONE_VIDEO,
+                params={"share_url": url},
+                headers={"Authorization": f"Bearer {settings.tikhub_api_key}"},
+            )
+    except Exception as exc:  # noqa: BLE001
+        return "", f"{type(exc).__name__}: {exc}"
+    if response.status_code >= 400:
+        return "", f"TikHub HTTP {response.status_code}"
+    try:
+        payload = response.json()
+    except ValueError as exc:
+        return "", f"返回不是 JSON：{exc}"
+    urls = collect_video_urls(payload)
+    if not urls:
+        return "", "这条链接里没有视频地址（可能是图文笔记）"
+    return urls[0], ""
+
+
+async def download_video_file(url: str, *, settings: Any) -> tuple[str, int, str]:
+    """下载抖音视频到 ``media/videos/``。返回 ``(相对路径, 字节数, 错误)``。
+
+    **下载而不是只给链接**：抖音播放地址是签名地址、会过期（项目里为图片栽过一次），
+    而且用户要的就是文件本身。
+    """
+    import hashlib
+    from pathlib import Path as _Path
+
+    import httpx
+
+    play_url, error = await fetch_douyin_video_url(url, settings=settings)
+    if error:
+        return "", 0, error
+
+    target_dir = _Path(settings.media_root_path) / "videos"
+    target_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        async with httpx.AsyncClient(
+            timeout=300.0,
+            trust_env=False,
+            follow_redirects=True,
+            # **必须带浏览器头。** 实测裸请求下载抖音视频 CDN 返回 **403**——
+            # 抖音的 vod CDN 会校验 User-Agent 与 Referer。
+            headers={
+                "User-Agent": (
+                    "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) "
+                    "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 "
+                    "Mobile/15E148 Safari/604.1"
+                ),
+                "Referer": "https://www.douyin.com/",
+            },
+        ) as client:
+            response = await client.get(play_url)
+            if response.status_code >= 400:
+                return "", 0, f"下载失败 HTTP {response.status_code}（抖音 CDN 校验头部）"
+            blob = response.content
+    except Exception as exc:  # noqa: BLE001
+        return "", 0, f"下载失败：{type(exc).__name__}: {exc}"
+
+    if not blob:
+        return "", 0, "下载到 0 字节"
+    megabytes = len(blob) // 1024 // 1024
+    if len(blob) > MAX_VIDEO_BYTES:
+        return "", len(blob), f"视频 {megabytes}MB 超过 {MAX_VIDEO_BYTES // 1024 // 1024}MB 上限"
+
+    digest = hashlib.sha256(blob).hexdigest()[:32]
+    target = target_dir / f"{digest}.mp4"
+    if not target.is_file():
+        target.write_bytes(blob)
+    relative = str(target.relative_to(_Path(settings.media_root_path).parent)).replace("\\", "/")
+    logger.info("downloaded video %s -> %s (%dMB)", url[:50], relative, megabytes)
+    return relative, len(blob), ""

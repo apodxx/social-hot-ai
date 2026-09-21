@@ -44,6 +44,9 @@ logger = logging.getLogger(__name__)
 
 #: 官方限制：图片 png/jpg，软限制 20MB、硬限制 200MB。我们只发图片。
 IMAGE_FILE_TYPE = 1
+#: 富媒体的 file_type：1=图片、2=视频、3=语音、4=文件（官方文档）。
+#: 用户要求「视频就下载下来发给我」，所以需要 2。
+VIDEO_FILE_TYPE = 2
 IMAGE_EXTENSIONS = (".png", ".jpg", ".jpeg")
 #: 需要先转成 jpg 才能发的格式。**这不是边角情况**：素材库里 453 张图里有 370 张是 webp，
 #: 而 QQ 富媒体图片只吃 png/jpg。不做转换的话"发送原帖图文"会退化成只发文字。
@@ -223,12 +226,34 @@ async def upload_group_image(
     headers: dict[str, str],
 ) -> MediaUploadResult:
     """把一张本地图片上传到群聊富媒体，返回可用于发送的 ``file_info``。"""
+    return await upload_group_media(
+        client, group_openid=group_openid, path=path, headers=headers,
+        file_type=IMAGE_FILE_TYPE, checker=check_image,
+    )
+
+
+async def upload_group_media(
+    client: httpx.AsyncClient,
+    *,
+    group_openid: str,
+    path: Path,
+    headers: dict[str, str],
+    file_type: int = IMAGE_FILE_TYPE,
+    checker: object | None = None,
+) -> MediaUploadResult:
+    """上传任意富媒体（图片/视频/语音/文件）。
+
+    ``file_type`` 决定服务端怎么处理：1=图片、2=视频。
+    除了类型和校验函数，其余分片上传流程与图片完全一致——所以共用一个实现，
+    而不是复制一份（那段分片逻辑踩过坑，复制必然分叉）。
+    """
     result = MediaUploadResult(file_name=path.name)
-    try:
-        check_image(path)
-    except QQMediaError as exc:
-        result.error = str(exc)
-        return result
+    if checker is not None:
+        try:
+            checker(path)  # type: ignore[operator]
+        except QQMediaError as exc:
+            result.error = str(exc)
+            return result
 
     digests = digest_file(path)
 
@@ -236,7 +261,7 @@ async def upload_group_image(
     try:
         prepare = await client.post(
             f"/v2/groups/{group_openid}/upload_prepare",
-            json=digests.as_prepare_body(file_name=path.name),
+            json=digests.as_prepare_body(file_name=path.name, file_type=file_type),
             headers=headers,
         )
     except httpx.HTTPError as exc:
@@ -324,7 +349,7 @@ async def upload_group_image(
         merge = await client.post(
             f"/v2/groups/{group_openid}/files",
             json={
-                "file_type": IMAGE_FILE_TYPE,
+                "file_type": file_type,
                 "srv_send_msg": False,
                 "file_name": path.name,
                 "upload_id": upload_id,
@@ -421,6 +446,8 @@ def _explain(response: httpx.Response) -> str:
 __all__ = [
     "IMAGE_EXTENSIONS",
     "IMAGE_FILE_TYPE",
+    "VIDEO_FILE_TYPE",
+    "upload_group_media",
     "MD5_10M_WINDOW",
     "FileDigests",
     "MediaUploadResult",
