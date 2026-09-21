@@ -197,7 +197,10 @@ TOOLS: tuple[ToolSpec, ...] = (
         name="generate_images",
         description=(
             "用**文生图**生成图片（不需要参考图）。**计费，约 ¥0.25/张，很贵。**"
-            "用户说「生成N张图片」「配图」「画一张封面」时用它。"
+            "用户说「生成N张图片」「配图」「画一张封面」时用它。\n"
+            "**但如果用户给的是一个带图片的链接（小红书笔记、抖音图文），"
+            "不要用它** —— 那种情况应当用 convert_text_to_note 直接使用原帖的图，"
+            "再花 ¥0.25/张去生成是浪费。只有视频链接才需要生成配图。"
             "**张数必须从用户话里取**（说「3张」就填 3），用户没说就不要猜、填 1。"
         ),
         parameters={
@@ -692,6 +695,12 @@ class Conversion:
     media_paths: list[str] = field(default_factory=list)
     #: 识别出的来源平台（douyin / xiaohongshu / weibo / web），便于排查。
     source: str = ""
+    #: 链接内容形态：``images``（原帖有图）/ ``video``（视频）/ ``text``。
+    #:
+    #: **调用方据此决定要不要生图**（用户明确的规则）：
+    #:   * ``images`` → 直接用原帖的图，**不生成新图**；
+    #:   * ``video``  → 视频没有可用配图，才用文生图补图。
+    kind: str = ""
 
     @property
     def ok(self) -> bool:
@@ -729,6 +738,8 @@ async def convert_text_to_note(
     collected_media: list[str] = []
     #: 认出平台后记下来（douyin / xiaohongshu / github / web），便于排查。
     source = "web"
+    #: 内容形态：有图 → images（用原图）；视频 → video（才生图）。
+    kind = "text"
     #: GitHub 仓库主页的判断放在这里，供下面 elif 分支使用。
     github_match = re.match(r"https?://(?:www\.)?github\.com/([^/\s]+)/([^/\s#?]+)", link or "")
 
@@ -748,6 +759,9 @@ async def convert_text_to_note(
         # **把链接流程取到的图带回去。** 不带上就会被调用方丢掉，
         # 然后它用普通网页抓图去抓一遍（对抖音无效），用户看到"配图没抓到"。
         collected_media = list(material_result.media_paths)
+        # **记录内容形态**，调用方据此决定要不要生图（用户明确的规则）：
+        # 图文有原图就直接用，只有视频才用文生图补图。
+        kind = "video" if material_result.kind == "video" else "images"
         if context:
             material += f"\n\n用户还补充说：{context}"
         logger.info(
@@ -769,6 +783,7 @@ async def convert_text_to_note(
             return Conversion(error=note.error, source=source)
         material = note.text
         collected_media = list(note.media_paths)
+        kind = "images" if collected_media else "text"
         if context:
             material += f"\n\n用户还补充说：{context}"
         logger.info(
@@ -910,4 +925,5 @@ async def convert_text_to_note(
         usage_cny=result.usage.estimated_cny(),
         media_paths=collected_media,
         source=source,
+        kind=kind,
     )

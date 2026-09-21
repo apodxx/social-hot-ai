@@ -1441,7 +1441,7 @@ async def route_and_execute(
             page_images = conversion.media_paths
             text += f"\n\n（附原笔记配图 {len(page_images)} 张）"
         link = first_url(source)
-        if link and not page_images:
+        if link and not page_images and conversion.kind != "video":
             from app.services.tikhub.note_link import fetch_xhs_note_images, is_xiaohongshu_link
 
             if is_xiaohongshu_link(link):
@@ -1467,6 +1467,13 @@ async def route_and_execute(
             "回复", text, page_images, passive_id=message_id, start_seq=sequence,
             keyboard=COMMAND_KEYBOARD,
         )
+
+        # **只有视频链接才生成配图**（用户明确的规则）：
+        #   * 原帖有图（kind=images）→ 上面已经把原图发了，不再花 ¥0.25/张去生成；
+        #   * 视频（kind=video）→ 视频本身拿不到可用配图，才用文生图补。
+        if conversion.kind == "video":
+            print("  视频链接 → 用文生图补配图")
+            await _attach_generated_images(channel, settings, text, count=2, label="视频")
         return True
 
     # 模型选了一个我们知道但这里没实现的工具——如实说明，不要假装什么都没发生。
