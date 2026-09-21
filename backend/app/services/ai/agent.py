@@ -434,6 +434,18 @@ PLATFORM_NAMES = {
 URL_PATTERN = re.compile(r"https?://[^\s，。；、）】\"'<>]+")
 
 
+#: 微博域名。**只做识别**：微博正文需要登录才能看，通用抓取会撞登录页。
+WEIBO_HOSTS = ("weibo.com", "weibo.cn", "t.cn")
+
+
+def is_weibo_link(url: str) -> bool:
+    """是不是微博链接。用户要求能分辨抖音/小红书/微博。"""
+    from urllib.parse import urlparse
+
+    host = urlparse(url).netloc.lower()
+    return any(host.endswith(candidate) for candidate in WEIBO_HOSTS)
+
+
 def first_url(text: str) -> str:
     match = URL_PATTERN.search(text or "")
     return match.group(0) if match else ""
@@ -678,6 +690,8 @@ class Conversion:
     error: str = ""
     #: 从链接流程顺带取到的图片，随结果带回去。
     media_paths: list[str] = field(default_factory=list)
+    #: 识别出的来源平台（douyin / xiaohongshu / weibo / web），便于排查。
+    source: str = ""
 
     @property
     def ok(self) -> bool:
@@ -700,6 +714,7 @@ async def convert_text_to_note(
     wanted = platform if platform in PLATFORM_NAMES else "xiaohongshu"
 
     from app.services.ai.promo_service import load_readme
+    from app.services.tikhub.note_link import is_xiaohongshu_link
     from app.services.tikhub.video_link import fetch_douyin_material, is_douyin_link
 
     # **先从整段文本里把链接找出来。**
@@ -712,6 +727,10 @@ async def convert_text_to_note(
     # 把链接从材料里摘掉，剩下的当补充说明——否则模型会把 URL 也当正文改写。
     context = material.replace(link, " ").strip() if link else material
     collected_media: list[str] = []
+    #: 认出平台后记下来（douyin / xiaohongshu / github / web），便于排查。
+    source = "web"
+    #: GitHub 仓库主页的判断放在这里，供下面 elif 分支使用。
+    github_match = re.match(r"https?://(?:www\.)?github\.com/([^/\s]+)/([^/\s#?]+)", link or "")
 
     # **视频链接要先"看懂视频"，否则文案只能靠标题瞎编。**
     # 实测过的坑：用户丢一个抖音视频链接进来，只拿到标题
@@ -738,11 +757,29 @@ async def convert_text_to_note(
             len(collected_media),
         )
 
+    # **小红书笔记**：取标题/正文 + 取图 + **拼成一张再 OCR**。
+    # 之前这条路径只下载图片交给调用方发送，**没取正文也没 OCR**，
+    # 于是小红书链接要么报错、要么只能对着标题瞎写（用户实测反馈过）。
+    elif link and is_xiaohongshu_link(link):
+        source = "xiaohongshu"
+        from app.services.tikhub.note_link import fetch_xhs_note_material
+
+        note = await fetch_xhs_note_material(link, settings=settings)
+        if not note.ok:
+            return Conversion(error=note.error, source=source)
+        material = note.text
+        collected_media = list(note.media_paths)
+        if context:
+            material += f"\n\n用户还补充说：{context}"
+        logger.info(
+            "xhs material: %d chars, %d image(s)", len(material), len(collected_media)
+        )
+
     # **GitHub 仓库主页**要先取 README。
     # 已有的 ``load_readme`` 会明确拒绝仓库主页（它只为 README 原始地址写的），
     # 而用户给的通常就是 ``https://github.com/owner/repo`` 这种链接。
-    github_match = re.match(r"https?://(?:www\.)?github\.com/([^/\s]+)/([^/\s#?]+)", link or "")
-    if github_match:
+    elif github_match:
+        source = "github"
         from app.services.hellogithub.client import fetch_repo_readme
 
         full_name = github_match.group(2).removesuffix(".git")
@@ -753,6 +790,23 @@ async def convert_text_to_note(
         material = f"（以下是 GitHub 仓库 {full_name} 的 README）\n\n{readme}"
         if context:
             material += f"\n\n用户还补充说：{context}"
+
+    # **微博**：先只做识别。微博正文需要登录才能看，通用抓取会撞登录页——
+    # 与其报一个看不懂的错，不如说清楚并让用户把正文贴过来。
+    elif link and is_weibo_link(link):
+        source = "weibo"
+        try:
+            fetched, _kind, _name = await asyncio.to_thread(load_readme, url=link)
+        except Exception as exc:  # noqa: BLE001
+            return Conversion(
+                error=(
+                    "微博链接还没接好（微博正文需要登录，通用抓取抓不到）。\n"
+                    "可以先把正文直接贴给我，我照样能改写成文案。"
+                    f"（{type(exc).__name__}）"
+                ),
+                source=source,
+            )
+        material = fetched
 
     # 链接要先把正文抓下来，否则模型只能对着 URL 干猜。
     # 复用 ``load_readme`` —— 它已经处理了重定向、大小上限与"抓到的是 HTML 登录页"
@@ -855,4 +909,5 @@ async def convert_text_to_note(
         platform=wanted,
         usage_cny=result.usage.estimated_cny(),
         media_paths=collected_media,
+        source=source,
     )

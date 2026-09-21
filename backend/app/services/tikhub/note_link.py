@@ -29,7 +29,12 @@ logger = logging.getLogger(__name__)
 #: 名字里那个 image 是关键——图文笔记详情要用 app_v2 这个。
 NOTE_DETAIL_ENDPOINT = "/api/v1/xiaohongshu/app_v2/get_image_note_detail"
 #: 笔记页地址里 note_id 的位置。分享链接的 redirectPath 是 URL 编码的，所以两种都要认。
-NOTE_ID_RE = re.compile(r"/(?:discovery/)?item/([0-9a-fA-F]{16,32})")
+#:
+#: **``/explore/`` 必须在内**——那是小红书网页版的标准格式
+#: （``www.xiaohongshu.com/explore/<note_id>``），用户从浏览器复制来的就是这种。
+#: 第一版只认 ``/item/`` 与 ``/discovery/item/``，于是这类链接解析不出 note_id，
+#: 整条图文流程直接失败（实测踩到）。
+NOTE_ID_RE = re.compile(r"/(?:explore|discovery/item|item)/([0-9a-fA-F]{16,32})")
 NOTE_ID_PARAM_RE = re.compile(r"note_?id=([0-9a-fA-F]{16,32})")
 XHS_HOSTS = ("xhslink.cn", "xhslink.com", "xiaohongshu.com")
 
@@ -237,6 +242,145 @@ def collect_video_urls(payload: Any, *, limit: int = 3) -> list[str]:
 
     walk(payload)
     return found[:limit]
+
+
+def collect_note_text(payload: Any) -> tuple[str, str]:
+    """取笔记的标题与正文。返回 ``(title, desc)``。
+
+    实测字段在 ``.data.data[].note_list[].title`` / ``.desc``——
+    第一版只取了图片、**完全没取正文**，于是小红书链接拿不到可改写的材料。
+    """
+    title = ""
+    desc = ""
+    stack: list[Any] = [payload]
+    while stack:
+        node = stack.pop()
+        if isinstance(node, dict):
+            if not title and isinstance(node.get("title"), str):
+                title = node["title"].strip()
+            if not desc and isinstance(node.get("desc"), str):
+                desc = node["desc"].strip()
+            if title and desc:
+                break
+            stack.extend(node.values())
+        elif isinstance(node, list):
+            stack.extend(node)
+    return title, desc
+
+
+async def fetch_xhs_note_material(url: str, *, settings: Any, image_limit: int = 6) -> "NoteMaterial":
+    """抓小红书笔记：**正文 + 图片（拼接后 OCR）**。**计费 1 次 TikHub 调用。**
+
+    这是「有图就取图、拼起来 OCR、再写文案」这条要求在小红书上的落地。
+    第一版只下载图片交给调用方去发，**没有任何文字材料**，所以小红书链接
+    要么报错（走 load_readme 被拒）、要么只能对着标题瞎写。
+    """
+    import httpx
+
+    link = await resolve_note_link(url)
+    if not link.ok:
+        return NoteMaterial(error=link.error)
+
+    params = {"note_id": link.note_id}
+    if link.xsec_token:
+        params["xsec_token"] = link.xsec_token
+    try:
+        async with httpx.AsyncClient(timeout=90.0, trust_env=False) as client:
+            response = await client.get(
+                settings.tikhub_base_url.rstrip("/") + NOTE_DETAIL_ENDPOINT,
+                params=params,
+                headers={"Authorization": f"Bearer {settings.tikhub_api_key}"},
+            )
+    except Exception as exc:  # noqa: BLE001
+        return NoteMaterial(error=f"取笔记失败：{type(exc).__name__}: {exc}")
+    if response.status_code >= 400:
+        return NoteMaterial(error=f"TikHub HTTP {response.status_code}: {response.text[:120]}")
+    try:
+        payload = response.json()
+    except ValueError as exc:
+        return NoteMaterial(error=f"返回不是 JSON：{exc}")
+
+    title, desc = collect_note_text(payload)
+    images = collect_image_urls(payload, limit=image_limit)
+    saved, download_error = await _download_note_images(images, settings=settings)
+
+    parts = ["（以下是一条小红书笔记的内容）"]
+    if title:
+        parts.append(f"标题：{title}")
+    if desc:
+        parts.append(f"正文：{desc}")
+
+    media: list[str] = []
+    if saved:
+        from app.services.ai.image_stitch import stitch_images
+        from app.services.ai.vision import ocr_images
+
+        stitched = stitch_images(saved, settings=settings)
+        ocr_input = [stitched.path] if stitched.ok else saved
+        media = [stitched.path] if stitched.ok else saved
+        vision = await ocr_images(ocr_input, settings=settings)
+        if vision.ok:
+            parts.append(f"图片上的文字（OCR）：\n{vision.text}")
+        elif vision.error:
+            parts.append(f"（图上文字没识别出来：{vision.error[:60]}）")
+    elif download_error:
+        parts.append(f"（图片没下载成功：{download_error[:60]}）")
+
+    if len(parts) == 1:
+        return NoteMaterial(error="这条笔记没有正文也没有可用图片，拿不到内容")
+    logger.info(
+        "xhs note %s: title=%s desc=%d chars, %d images",
+        link.note_id,
+        bool(title),
+        len(desc),
+        len(saved),
+    )
+    return NoteMaterial(text="\n\n".join(parts), media_paths=media, title=title)
+
+
+@dataclass
+class NoteMaterial:
+    """小红书/微博等图文链接的解析结果。"""
+
+    text: str = ""
+    media_paths: list[str] = field(default_factory=list)
+    title: str = ""
+    error: str = ""
+
+    @property
+    def ok(self) -> bool:
+        return bool(self.text) and not self.error
+
+
+async def _download_note_images(images: list[str], *, settings: Any) -> tuple[list[str], str]:
+    """下载笔记图片到素材库。"""
+    import hashlib
+    from pathlib import Path
+
+    import httpx
+
+    target_dir = Path(settings.media_root_path) / "from_url"
+    target_dir.mkdir(parents=True, exist_ok=True)
+    saved: list[str] = []
+    try:
+        async with httpx.AsyncClient(timeout=60.0, trust_env=False) as client:
+            for candidate in images:
+                try:
+                    blob = (await client.get(candidate)).content
+                except Exception:  # noqa: BLE001
+                    continue
+                if len(blob) < 4 * 1024:
+                    continue
+                digest = hashlib.sha256(blob).hexdigest()[:32]
+                path = target_dir / f"{digest}.jpg"
+                if not path.is_file():
+                    path.write_bytes(blob)
+                saved.append(
+                    str(path.relative_to(Path(settings.media_root_path).parent)).replace("\\", "/")
+                )
+    except Exception as exc:  # noqa: BLE001
+        return saved, f"{type(exc).__name__}: {exc}"
+    return saved, ""
 
 
 async def fetch_xhs_note_images(
