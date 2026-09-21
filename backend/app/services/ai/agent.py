@@ -243,6 +243,41 @@ TOOLS: tuple[ToolSpec, ...] = (
         },
     ),
     ToolSpec(
+        name="list_hellogithub",
+        description=(
+            "列出 **HelloGitHub 上最新的开源项目**（每页 20 个，含中文标题与简介）。"
+            "用户说「github最新列表」「最近有什么开源项目」「HelloGitHub」时用它。"
+            "**免费**（数据源是公开 API），返回的是项目清单，不写文案。"
+        ),
+        parameters={
+            "type": "object",
+            "properties": {
+                "count": {"type": "integer", "description": "列几个，默认 10，最多 20。"}
+            },
+        },
+    ),
+    ToolSpec(
+        name="analyze_github_repo",
+        description=(
+            "**分析一个 GitHub 仓库并生成自媒体文案**（含配图）。"
+            "用户给了一个 github.com 链接、说「分析这个项目」「把这个项目写成小红书」时用它。"
+            "会读仓库说明，生成的文案**不含链接**（平台会限流），改为给可搜索的关键词。"
+        ),
+        parameters={
+            "type": "object",
+            "properties": {
+                "url": {"type": "string", "description": "GitHub 仓库链接，原样传入。"},
+                "platform": {
+                    "type": "string",
+                    "enum": ["xiaohongshu", "weibo", "douyin"],
+                    "description": "目标平台。没说时用 xiaohongshu。",
+                },
+            },
+            "required": ["url"],
+        },
+        billed=True,
+    ),
+    ToolSpec(
         name="show_help",
         description="用户问你能做什么、不知道怎么用、或意图无法判断时用它。",
         parameters={"type": "object", "properties": {}},
@@ -379,8 +414,11 @@ CONVERT_SYSTEM_PROMPT = """你是中文自媒体文案编辑。把用户给的�
 硬性要求：
 
 1. **只使用材料里出现的事实。** 不补充、不推测、不编数字或结论。
-2. 直接输出文案正文，**不要任何前言、解释或 Markdown 标记**（不要 `**加粗**`）。
-3. 篇幅：小红书 250-600 字（原文信息多就写长些），微博 120-300 字，抖音 200-450 字。
+2. **正文里绝对不要出现网址或链接**（http、www、域名、短链一律不行）——
+   小红书/抖音会因此限流甚至封号。需要引导时，**改成能搜到的关键词**：
+   写「搜"项目名"」或直接给仓库全名（如 `rustfs/rustfs`），让人自己搜。
+3. 直接输出文案正文，**不要任何前言、解释或 Markdown 标记**（不要 `**加粗**`）。
+4. 篇幅：小红书 250-600 字（原文信息多就写长些），微博 120-300 字，抖音 200-450 字。
 """
 
 PLATFORM_NAMES = {
@@ -607,6 +645,22 @@ async def convert_text_to_note(
             len(material),
             len(collected_media),
         )
+
+    # **GitHub 仓库主页**要先取 README。
+    # 已有的 ``load_readme`` 会明确拒绝仓库主页（它只为 README 原始地址写的），
+    # 而用户给的通常就是 ``https://github.com/owner/repo`` 这种链接。
+    github_match = re.match(r"https?://(?:www\.)?github\.com/([^/\s]+)/([^/\s#?]+)", link or "")
+    if github_match:
+        from app.services.hellogithub.client import fetch_repo_readme
+
+        full_name = github_match.group(2).removesuffix(".git")
+        full_name = f"{github_match.group(1)}/{full_name}"
+        readme, readme_error = await fetch_repo_readme(full_name)
+        if readme_error:
+            return Conversion(error=f"读不到这个仓库的说明：{readme_error}")
+        material = f"（以下是 GitHub 仓库 {full_name} 的 README）\n\n{readme}"
+        if context:
+            material += f"\n\n用户还补充说：{context}"
 
     # 链接要先把正文抓下来，否则模型只能对着 URL 干猜。
     # 复用 ``load_readme`` —— 它已经处理了重定向、大小上限与"抓到的是 HTML 登录页"

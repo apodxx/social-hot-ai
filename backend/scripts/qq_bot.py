@@ -576,7 +576,10 @@ HELP_TEXT = (
     "  · 说「把链接里图片识别出来」—— OCR 图上文字再写文案\n"
     "· 「今天中午的新闻」「今天的新闻」—— 读已抓好的（**免费**）\n"
     "· 「获取新的热门新闻」「重新抓一次热搜」—— 真去抓（计费）\n"
-    "· 「生成3张图片」—— **文生图，约 ¥0.25/张**，说几张画几张（上限 6 张）\n\n"
+    "· 「生成3张图片」—— **文生图，约 ¥0.25/张**，说几张画几张（上限 6 张）\n"
+    "· 「github最新列表」—— HelloGitHub 上的最新开源项目（**免费**）\n"
+    "· 发一个 **GitHub 链接**说「分析成小红书文案」—— 读 README 写文案 + 仓库预览图\n"
+    "  （生成的文案**不含链接**——平台会限流；改为给可搜索的关键词）\n\n"
     "· 帮助 —— 显示这条\n\n"
     "回复格式：1 条文字 + 配图。生成类指令有冷却与每日上限。"
 )
@@ -1312,6 +1315,85 @@ async def route_and_execute(
         # 收尾文字也走**主动消息**：这个指令本来就慢（可能 4 分钟以上），
         # 用被动回复会撞 5 分钟窗口（错误码 40034128）。
         await channel.send_rich("回复", text, [], keyboard=COMMAND_KEYBOARD)
+        return True
+
+    if call.name == "list_hellogithub":
+        # **免费**：数据源是公开 API，没有计费调用。所以不进额度闸门。
+        try:
+            count = int(call.arguments.get("count") or 10)
+        except (TypeError, ValueError):
+            count = 10
+        count = max(1, min(20, count))  # 一页就是 20 个
+        from app.services.hellogithub.client import fetch_repos
+
+        listing = await fetch_repos(page=1)
+        if not listing.ok:
+            text = f"没能取到 HelloGitHub 列表：{listing.error}"
+        else:
+            repos = listing.repos[:count]
+            lines = [
+                f"HelloGitHub 最新开源项目 {len(repos)} 个（共 {len(listing.repos)} 个）",
+                "",
+            ]
+            for index, repo in enumerate(repos, start=1):
+                lines.append(f"{index}. {repo.title}")
+                lines.append(f"   {repo.full_name}" + ("  🔥热门" if repo.is_hot else ""))
+                if repo.summary:
+                    summary = repo.summary.replace("\n", " ")
+                    lines.append(f"   {summary[:70]}{'…' if len(summary) > 70 else ''}")
+            lines.append("")
+            lines.append("想让我把某一个写成小红书文案，发「分析 <仓库全名>」即可。")
+            text = "\n".join(lines)
+        await channel.send_rich(
+            "回复", text, [], passive_id=message_id, keyboard=COMMAND_KEYBOARD
+        )
+        return True
+
+    if call.name == "analyze_github_repo":
+        url = str(call.arguments.get("url") or "").strip()
+        platform = str(call.arguments.get("platform") or "xiaohongshu")
+        if not url:
+            await channel.send_rich("回复", "把 GitHub 链接发我。", [], passive_id=message_id, keyboard=COMMAND_KEYBOARD)
+            return True
+        refusal = budget.check()
+        if refusal:
+            await channel.send_rich("回复", refusal, [], passive_id=message_id, keyboard=COMMAND_KEYBOARD)
+            return True
+        budget.consume()
+        label = {"xiaohongshu": "小红书", "weibo": "微博", "douyin": "抖音"}.get(platform, platform)
+        notice = await channel.send_rich(
+            "分析中",
+            f"收到，正在读这个仓库的说明并写{label}文案，约 30-60 秒。",
+            [],
+            passive_id=message_id,
+        )
+        sequence = int(notice.detail.get("text_parts") or 0) + int(
+            notice.detail.get("images_sent") or 0
+        )
+
+        conversion = await convert_text_to_note(url, platform=platform, settings=settings)
+        if conversion.ok:
+            text = f"【{label}文案】\n\n{conversion.text}\n\n本次消耗约 ¥{conversion.usage_cny:.3f}"
+        else:
+            text = f"分析失败：{conversion.error}"
+
+        # **配图用 GitHub 的社交预览卡片**（每个仓库都有一张现成的）。
+        images: list[str] = []
+        repo_match = re.search(r"github\.com/([^/\s]+/[^/\s#?]+)", url)
+        if repo_match:
+            full_name = repo_match.group(1).removesuffix(".git")
+            og = f"https://opengraph.githubassets.com/1/{full_name}"
+            from app.services.tikhub.video_link import _download_images
+
+            saved, _err = await _download_images([og], settings=settings)
+            images = saved
+            if images:
+                text += f"\n\n（配图：该仓库的 GitHub 预览卡片）"
+
+        await channel.send_rich(
+            "回复", text, images, passive_id=message_id, start_seq=sequence,
+            keyboard=COMMAND_KEYBOARD,
+        )
         return True
 
     if call.name == "convert_text_to_note":
