@@ -318,8 +318,25 @@ class QQBotChannel(NotificationChannel):
         )
 
 
-    async def send_video(
-        self, path: str, *, passive_id: str = "", caption: str = ""
+    async def send_video(self, path: str, *, passive_id: str = "") -> SendResult:
+        """发一个**视频**（file_type=2）。"""
+        from app.services.notification.qq_media import VIDEO_FILE_TYPE
+
+        return await self._send_media(path, file_type=VIDEO_FILE_TYPE, passive_id=passive_id)
+
+    async def send_document(self, path: str, *, passive_id: str = "") -> SendResult:
+        """发一个**文件附件**（file_type=4），比如 .html/.txt。
+
+        用户要求：把生成的 HTML 当文件发到群里。
+        """
+        from app.services.notification.qq_media import DOCUMENT_FILE_TYPE
+
+        return await self._send_media(
+            path, file_type=DOCUMENT_FILE_TYPE, passive_id=passive_id
+        )
+
+    async def _send_media(
+        self, path: str, *, file_type: int, passive_id: str = ""
     ) -> SendResult:
         """发送一个**视频**文件（富媒体 file_type=2）。
 
@@ -357,17 +374,14 @@ class QQBotChannel(NotificationChannel):
                 "Authorization": f"QQBot {token}",
                 "Content-Type": "application/json",
             }
-            from app.services.notification.qq_media import (
-                VIDEO_FILE_TYPE,
-                upload_group_media,
-            )
+            from app.services.notification.qq_media import upload_group_media
 
             media = await upload_group_media(
                 client,
                 group_openid=group_openid,
                 path=local,
                 headers=headers,
-                file_type=VIDEO_FILE_TYPE,
+                file_type=file_type,
             )
             if not media.ok:
                 return SendResult(channel=self.name, ok=False, error=media.error)

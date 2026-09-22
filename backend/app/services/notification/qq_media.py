@@ -47,6 +47,9 @@ IMAGE_FILE_TYPE = 1
 #: 富媒体的 file_type：1=图片、2=视频、3=语音、4=文件（官方文档）。
 #: 用户要求「视频就下载下来发给我」，所以需要 2。
 VIDEO_FILE_TYPE = 2
+#: 4=文件（随便什么附件，比如 .html/.txt/.zip）。
+#: 用户要求把生成的 HTML 当文件发到群里。
+DOCUMENT_FILE_TYPE = 4
 IMAGE_EXTENSIONS = (".png", ".jpg", ".jpeg")
 #: 需要先转成 jpg 才能发的格式。**这不是边角情况**：素材库里 453 张图里有 370 张是 webp，
 #: 而 QQ 富媒体图片只吃 png/jpg。不做转换的话"发送原帖图文"会退化成只发文字。
@@ -447,6 +450,7 @@ __all__ = [
     "IMAGE_EXTENSIONS",
     "IMAGE_FILE_TYPE",
     "VIDEO_FILE_TYPE",
+    "DOCUMENT_FILE_TYPE",
     "upload_group_media",
     "MD5_10M_WINDOW",
     "FileDigests",
